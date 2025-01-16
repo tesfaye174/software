@@ -1,12 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="styles.css">
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storia Interattiva</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<h1>Hello World</h1>
-<h2>Hello world!!!</h2>
+<header>
+    <h1>Storia Interattiva</h1>
+    <nav>
+        <ul>
+            <li><a href="#catalogo">Catalogo</a></li>
+            <li><a href="#scrittura">Scrivi</a></li>
+            <li><a href="#gioco">Gioca</a></li>
+            <li><a href="#login">Accedi</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <!-- Catalogo Storie -->
+    <section id="catalogo">
+        <h2>Catalogo Storie</h2>
+        <input type="text" id="search" placeholder="Cerca storie...">
+        <button onclick="cercaStorie()">Cerca</button>
+        <div id="lista-storie"></div>
+    </section>
+
+    <!-- Scrivi una Storia -->
+    <section id="scrittura">
+        <h2>Scrivi una Storia</h2>
+        <form id="scrivi-storia">
+            <label for="titolo">Titolo:</label>
+            <input type="text" id="titolo" required>
+
+            <label for="scenario-iniziale">Scenario:</label>
+            <textarea id="scenario-iniziale" rows="4" required></textarea>
+
+            <label for="opzioni">Opzioni (separate da virgola):</label>
+            <textarea id="opzioni" rows="2" required></textarea>
+
+            <button type="button" onclick="aggiungiStoria()">Aggiungi</button>
+        </form>
+    </section>
+
+    <!-- Gioca una Storia -->
+    <section id="gioco">
+        <h2>Gioca una Storia</h2>
+        <div id="scenario"></div>
+        <div id="scelte"></div>
+    </section>
+
+    <!-- Login/Registrazione -->
+    <section id="login">
+        <h2>Accedi o Registrati</h2>
+        <form id="login-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" required>
+
+            <button type="button" onclick="login()">Accedi</button>
+            <button type="button" onclick="registrati()">Registrati</button>
+        </form>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2025 Storia Interattiva</p>
+</footer>
+
+<script src="main.js"></script>
 </body>
 </html>

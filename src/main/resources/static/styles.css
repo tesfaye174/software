@@ -1,3 +1,136 @@
-h1 {
-    color: red;
+/* Stile ispirato al design Apple con colori aggiornati */
+
+/* Stile generale */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f7; /* Colore di sfondo Apple */
+    color: #1c1c1e; /* Colore principale del testo */
+    line-height: 1.6;
+}
+
+/* Header */
+header {
+    background: #ffffff; /* Colore bianco per il header */
+    border-bottom: 1px solid #d1d1d6; /* Grigio chiaro Apple */
+    padding: 1rem 2rem;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1c1c1e;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #007aff; /* Blu Apple */
+    font-weight: 500;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Main */
+main {
+    padding: 2rem;
+    max-width: 800px;
+    margin: auto;
+}
+
+/* Sezioni */
+section {
+    background: #ffffff; /* Bianco per le sezioni */
+    border: 1px solid #d1d1d6; /* Grigio chiaro Apple */
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(60, 64, 67, 0.1); /* Ombreggiatura leggera */
+}
+
+h2 {
+    color: #1c1c1e;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+/* Form */
+form label {
+    display: block;
+    margin: 0.5rem 0;
+    font-weight: 500;
+}
+
+form input, form textarea, form button {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid #d1d1d6; /* Grigio chiaro Apple */
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+form input:focus, form textarea:focus {
+    border-color: #007aff; /* Blu Apple */
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.3); /* Effetto focus blu */
+}
+
+form button {
+    background: #007aff; /* Blu Apple */
+    color: #ffffff; /* Testo bianco */
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background: #0056d2; /* Blu scuro Apple */
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 1rem 0;
+    background: #f2f2f7; /* Sfondo grigio chiaro Apple */
+    color: #8e8e93; /* Grigio testo Apple */
+    border-top: 1px solid #d1d1d6; /* Grigio chiaro Apple */
+    font-size: 0.9rem;
+}
+
+footer p {
+    margin: 0;
+}
+
+/* Elementi aggiuntivi */
+input[type="text"], input[type="password"], textarea {
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:hover, input[type="password"]:hover, textarea:hover {
+    background-color: #f0f0f5; /* Effetto hover chiaro Apple */
+}
+
+button {
+    transition: background-color 0.3s ease;
 }
