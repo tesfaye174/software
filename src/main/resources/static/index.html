@@ -1,77 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Storia Interattiva</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Storie Interattive</title>
+    <style>
+        body {
+     font-family: 'Helvetica Neue', Arial, sans-serif;
+     margin: 0;
+     padding: 0;
+     color: #333;
+     background-color: #f0f8ff;
+ }
+ header {
+     background-color: #5A20CB;
+     color: white;
+     padding: 2rem 1rem;
+     text-align: center;
+ }
+ header h1 {
+     margin: 0;
+     font-size: 2.5rem;
+     font-weight: bold;
+ }
+ main {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     height: calc(100vh - 160px);
+     text-align: center;
+     padding: 1rem;
+ }
+ main h2 {
+     font-size: 4rem;
+     color: #5A20CB;
+     margin-bottom: 1.5rem;
+     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+ }
+ main p {
+     font-size: 1.2rem;
+     color: #555;
+     max-width: 600px;
+     margin: 0 auto 2.5rem;
+ }
+ main a {
+     display: inline-block;
+     padding: 1rem 2rem;
+     background-color: #5A20CB;
+     color: white;
+     text-decoration: none;
+     font-size: 1.2rem;
+     border-radius: 8px;
+     transition: background-color 0.3s, transform 0.3s;
+ }
+ main a:hover {
+     background-color: #713FC2;
+     transform: scale(1.05);
+ }
+ footer {
+     background-color: #5A20CB;
+     color: white;
+     text-align: center;
+     padding: 1.5rem 0;
+     font-size: 1rem;
+ }
+
+    </style>
 </head>
 <body>
 <header>
-    <h1>Storia Interattiva</h1>
-    <nav>
-        <ul>
-            <li><a href="#catalogo">Catalogo</a></li>
-            <li><a href="#scrittura">Scrivi</a></li>
-            <li><a href="#gioco">Gioca</a></li>
-            <li><a href="#login">Accedi</a></li>
-        </ul>
-    </nav>
+    <h1>Storie Interattive</h1>
 </header>
 
 <main>
-    <!-- Catalogo Storie -->
-    <section id="catalogo">
-        <h2>Catalogo Storie</h2>
-        <input type="text" id="search" placeholder="Cerca storie...">
-        <button onclick="cercaStorie()">Cerca</button>
-        <div id="lista-storie"></div>
-    </section>
-
-    <!-- Scrivi una Storia -->
-    <section id="scrittura">
-        <h2>Scrivi una Storia</h2>
-        <form id="scrivi-storia">
-            <label for="titolo">Titolo:</label>
-            <input type="text" id="titolo" required>
-
-            <label for="scenario-iniziale">Scenario:</label>
-            <textarea id="scenario-iniziale" rows="4" required></textarea>
-
-            <label for="opzioni">Opzioni (separate da virgola):</label>
-            <textarea id="opzioni" rows="2" required></textarea>
-
-            <button type="button" onclick="aggiungiStoria()">Aggiungi</button>
-        </form>
-    </section>
-
-    <!-- Gioca una Storia -->
-    <section id="gioco">
-        <h2>Gioca una Storia</h2>
-        <div id="scenario"></div>
-        <div id="scelte"></div>
-    </section>
-
-    <!-- Login/Registrazione -->
-    <section id="login">
-        <h2>Accedi o Registrati</h2>
-        <form id="login-form">
-            <label for="username">Username:</label>
-            <input type="text" id="username" required>
-
-            <label for="password">Password:</label>
-            <input type="password" id="password" required>
-
-            <button type="button" onclick="login()">Accedi</button>
-            <button type="button" onclick="registrati()">Registrati</button>
-        </form>
-    </section>
+    <h2>Benvenuto!</h2>
+    <p>Esplora, crea e condividi storie che prendono vita. Ogni scelta che fai determina il tuo percorso.</p>
+    <a href="#stories">Scopri di più</a>
 </main>
 
 <footer>
-    <p>&copy; 2025 Storia Interattiva</p>
+    &copy; 2025 Storie Interattive. Tutti i diritti riservati.
 </footer>
-
-<script src="main.js"></script>
 </body>
 </html>
