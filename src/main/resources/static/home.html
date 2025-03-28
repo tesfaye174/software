@@ -120,6 +120,15 @@
 </head>
 <body>
 
+<div class="user-info" style="background-color: var(--border-color); padding: 10px; display: flex; justify-content: space-between; align-items: center;">
+    <div id="userInfo" style="display: none;">Benvenuto, utente!</div>
+    <div class="auth-buttons">
+        <a href="login.html" id="loginBtn" style="margin-right: 10px;">Accedi</a>
+        <a href="registrazione.html" id="registerBtn">Registrati</a>
+        <button id="logoutBtn" style="display: none; background-color: var(--button-color); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Esci</button>
+    </div>
+</div>
+
 <div class="container">
   <h1>Benvenuto nel Gioco Interattivo!</h1>
   <p class="story-text" id="story-text">Sei un eroe in cerca di avventure. Inizia la tua storia scegliendo un percorso:</p>
@@ -130,7 +139,21 @@
   </div>
 </div>
 
+<script src="main.js"></script>
 <script>
+  // Inizializza il gestore utenti quando la pagina si carica
+  document.addEventListener('DOMContentLoaded', function() {
+    UserManager.init();
+    
+    // Gestisci il pulsante di logout
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', function() {
+        UserManager.logout();
+      });
+    }
+  });
+  
   const stages = {
       fase1: {
           text: "Sei davanti a una foresta oscura. Vuoi entrare o tornare indietro?",

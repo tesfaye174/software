@@ -141,6 +141,7 @@
     <p><a href="index.html">torna alla home</a></p>
 </section>
 
+<script src="main.js"></script>
 <script>
     // Funzione di registrazione
     function registrazione() {
@@ -160,9 +161,32 @@
             document.getElementById('conferma-password').classList.remove('error');
         }
 
-        // Simulazione di invio dati (puoi collegarlo a un backend)
-        alert(`Registrazione completata!\nNome Utente: ${nomeUtente}\nEmail: ${email}`);
+        // Usa UserManager per effettuare la registrazione
+        UserManager.register(nomeUtente, password, email, (error, data) => {
+            if (error) {
+                alert("Errore durante la registrazione: " + (error.message || "Errore sconosciuto"));
+                return;
+            }
+            
+            alert("Registrazione completata con successo!");
+            // Effettua automaticamente il login dopo la registrazione
+            UserManager.login(email, password, (loginError, loginData) => {
+                if (loginError) {
+                    alert("Registrazione completata, ma errore durante il login automatico. Prova ad accedere manualmente.");
+                    window.location.href = "login.html";
+                    return;
+                }
+                
+                // Reindirizza l'utente alla home.html
+                window.location.href = "home.html";
+            });
+        });
     }
+    
+    // Inizializza il gestore utenti quando la pagina si carica
+    document.addEventListener('DOMContentLoaded', function() {
+        UserManager.init();
+    });
 </script>
 </body>
 </html>

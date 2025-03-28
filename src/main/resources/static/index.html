@@ -237,5 +237,23 @@
 <footer>
     &copy; 2025 Storie Interattive. Tutti i diritti riservati.
 </footer>
+
+<script src="main.js"></script>
+<script>
+    // Inizializza il gestore utenti quando la pagina si carica
+    document.addEventListener('DOMContentLoaded', function() {
+        UserManager.init();
+        
+        // Aggiorna l'interfaccia utente in base allo stato di autenticazione
+        if (UserManager.currentUser) {
+            // Se l'utente è già autenticato, modifica il link per iniziare
+            const startLink = document.querySelector('main a');
+            if (startLink) {
+                startLink.href = "story.html?id=1";
+                startLink.textContent = "Inizia la tua avventura";
+            }
+        }
+    });
+</script>
 </body>
 </html>
