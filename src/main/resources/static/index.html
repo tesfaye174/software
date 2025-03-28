@@ -4,30 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Storie Interattive</title>
-    <link rel="stylesheet" href="modern.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* Colori principali armoniosi */
         :root {
-            --sustainable-linen: #FAF3E1; /* Sustainable Linen */
-            --recycled-cotton: #F5E7C6; /* Recycled Cotton */
-            --electric-tangerine: #FF6D1F; /* Electric Tangerine */
-            --black-hole: #222222; /* Black Hole */
-            --border-color: #d2d2d7; /* Grigio bordo */
-            --button-hover-color: #FF6D1F; /* Electric Tangerine */
-            --input-background: #ffffff; /* Bianco */
-            --input-border: #d2d2d7; /* Grigio bordo */
-            --error-color: #d93025; /* Rosso errore */
-            --primary-color: #005f73; /* Blu petrolio */
-            --secondary-color: #94d2bd; /* Verde menta chiaro */
-            --background-color: #f5f5f5; /* Grigio molto chiaro */
-            --text-color: #333; /* Grigio antracite */
-            --link-color: #FF6D1F; /* Electric Tangerine */
+            /* Color Palette */
+            --sustainable-linen: #FAF3E1;
+            --recycled-cotton: #F5E7C6;
+            --electric-tangerine: #FF6D1F;
+            --black-hole: #222222;
+            --primary-color: #31456A;
+            --secondary-color: #DD3838;
+            --background-color: #F3F3F3;
+            --text-color: #333;
         }
 
-        /* Stili generali */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -35,11 +27,11 @@
         }
 
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
             font-size: 16px;
-            line-height: 1.5;
+            line-height: 1.6;
             color: var(--text-color);
-            background-color: var(--sustainable-linen);
+            background-color: var(--background-color);
             overflow-x: hidden;
         }
 
@@ -49,44 +41,49 @@
             color: #fff;
             padding: 2rem 1rem;
             text-align: center;
-            animation: slideFromTop 1s ease-out;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         header h1 {
             margin: 0;
             font-size: 2.5rem;
-            font-weight: bold;
-            animation: zoomIn 1.5s ease-in-out;
+            font-weight: 700;
+            letter-spacing: -1px;
         }
 
-        /* Main */
+        /* Main Content */
         main {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: calc(100vh - 160px);
+            min-height: calc(100vh - 200px);
             text-align: center;
-            padding: 1rem;
-            background: linear-gradient(135deg, rgba(245, 231, 217, 0.4), rgba(245, 245, 245, 0));
-            border-radius: 15px;
-            animation: fadeInScale 2s ease-out;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(49, 69, 106, 0.05), rgba(243, 243, 243, 0.1));
+        }
+
+        main .card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
         }
 
         main h2 {
-            font-size: 7rem;
+            font-size: 4rem;
             color: var(--primary-color);
             margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            animation: bounceText 2.5s infinite ease-in-out;
+            font-weight: 700;
         }
 
         main h3 {
             font-size: 2rem;
             margin-bottom: 2rem;
             color: var(--secondary-color);
-            font-style: italic;
-            animation: fadeInLeft 1.5s ease-in-out;
+            font-weight: 500;
         }
 
         main p {
@@ -94,24 +91,25 @@
             color: var(--text-color);
             max-width: 700px;
             margin: 0 auto 2.5rem;
-            animation: fadeInRight 1.5s ease-in-out;
+            line-height: 1.8;
         }
 
-        main a {
+        main a.button {
             display: inline-block;
             padding: 1rem 2rem;
-            background-color: var(--electric-tangerine);
+            background-color: var(--secondary-color);
             color: #fff;
             text-decoration: none;
             font-size: 1.2rem;
             border-radius: 8px;
-            transition: transform 0.3s ease, background-color 0.3s ease;
-            animation: glow 1.5s ease-out infinite alternate;
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
 
-        main a:hover {
-            background-color: var(--button-hover-color);
-            transform: scale(1.1);
+        main a.button:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
         /* Footer */
@@ -121,104 +119,35 @@
             text-align: center;
             padding: 1.5rem 0;
             font-size: 1rem;
-            animation: slideFromBottom 1.2s ease-out;
         }
 
-        /* Animazioni */
-        @keyframes slideFromTop {
-            0% {
-                transform: translateY(-100%);
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
             }
-            100% {
+            to {
                 transform: translateY(0);
-            }
-        }
-
-        @keyframes slideFromBottom {
-            0% {
-                transform: translateY(100%);
-            }
-            100% {
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes zoomIn {
-            0% {
-                transform: scale(0.5);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1);
                 opacity: 1;
             }
         }
 
-        @keyframes fadeInScale {
-            0% {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
+        .fade-in { animation: fadeIn 1s ease; }
+        .slide-up { animation: slideUp 1s ease; }
 
-        @keyframes bounceText {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        @keyframes fadeInLeft {
-            0% {
-                transform: translateX(-50%);
-                opacity: 0;
-            }
-            100% {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadeInRight {
-            0% {
-                transform: translateX(50%);
-                opacity: 0;
-            }
-            100% {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes glow {
-            0% {
-                box-shadow: 0 0 10px rgba(238, 155, 0, 0.5);
-            }
-            100% {
-                box-shadow: 0 0 20px rgba(238, 155, 0, 1);
-            }
-        }
-
-        /* Media query per dispositivi mobili */
+        /* Responsive Design */
         @media (max-width: 768px) {
-            main h2 {
-                font-size: 4rem;
-            }
-            main h3 {
-                font-size: 1.5rem;
-            }
-        }
-
-        /* Media query per dispositivi tablet */
-        @media (max-width: 1024px) {
-            main h2 {
-                font-size: 5rem;
+            main h2 { font-size: 3rem; }
+            main h3 { font-size: 1.5rem; }
+            main .card {
+                padding: 2rem;
+                margin: 0 1rem;
             }
         }
     </style>
@@ -236,7 +165,7 @@
             Immergiti in un mondo di storie interattive dove ogni scelta che fai può cambiare tutto.
             Sogna, esplora e condividi i tuoi percorsi con la nostra comunità.
         </p>
-        <a href="registrazione.html" class="button pulse">Inizia ora</a>
+        <a href="registrazione.html" class="button">Inizia ora</a>
     </div>
 </main>
 
@@ -244,21 +173,31 @@
     &copy; 2025 Storie Interattive. Tutti i diritti riservati.
 </footer>
 
-<script src="main.js"></script>
 <script>
-    // Inizializza il gestore utenti quando la pagina si carica
-    document.addEventListener('DOMContentLoaded', function() {
-        UserManager.init();
-        
-        // Aggiorna l'interfaccia utente in base allo stato di autenticazione
-        if (UserManager.currentUser) {
-            // Se l'utente è già autenticato, modifica il link per iniziare
+    // Minimal User Management
+    const UserManager = {
+        currentUser: null,
+        init: function() {
+            // Check if user is logged in
             const startLink = document.querySelector('main a');
-            if (startLink) {
+            if (this.currentUser && startLink) {
                 startLink.href = "story.html?id=1";
                 startLink.textContent = "Inizia la tua avventura";
             }
+        },
+        login: function(email, password, callback) {
+            // Simulated login
+            if (email && password) {
+                this.currentUser = { email: email };
+                callback(null, this.currentUser);
+            } else {
+                callback(new Error("Credenziali non valide"));
+            }
         }
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        UserManager.init();
     });
 </script>
 </body>

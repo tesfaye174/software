@@ -1,250 +1,313 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gioco Interattivo - Home</title>
-  <link rel="stylesheet" href="modern.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-        --background-color: #FAF3E1; /* Sustainable Linen */
-        --text-color: #222222; /* Black Hole */
-        --border-color: #F5E7C6; /* Recycled Cotton */
-        --button-color: #FF6D1F; /* Electric Tangerine */
-        --button-hover-color: #D85C19; /* Versione scura di Electric Tangerine */
-        --input-background: #ffffff; /* Bianco */
-        --input-border: #F5E7C6; /* Recycled Cotton */
-        --error-color: #D93025; /* Rosso errore */
-        --transition-speed: 0.3s;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avventura Interattiva</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --white: #F3F3F3;
+            --navy-blue: #31456A;
+            --bright-red: #DD3838;
+            --black: #222222;
+            --shadow-color: rgba(136, 136, 188, 0.4);
+            --shadow-blur: 12px;
+        }
 
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: var(--background-color);
-        margin: 0;
-        padding: 0;
-        color: var(--text-color);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        text-align: center;
-        background-image: url('https://example.com/your-background-image.jpg');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
 
-    .container {
-        background-color: rgba(255, 255, 255, 0.8);
-        border-radius: 10px;
-        padding: 30px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        width: 80%;
-        max-width: 600px;
-        transition: transform var(--transition-speed);
-    }
+        body {
+            background-color: var(--white);
+            color: var(--navy-blue);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-    .container:hover {
-        transform: scale(1.05);
-    }
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow:
+                0 6px 6px rgba(0, 0, 0, 0.12),
+                0 6px 12px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            padding: 30px;
+            text-align: center;
+        }
 
-    h1 {
-        font-size: 2.5em;
-        margin-bottom: 20px;
-        color: var(--text-color);
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-    }
+        .user-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-    .story-text {
-        font-size: 1.2em;
-        line-height: 1.6;
-        color: var(--text-color);
-        margin-bottom: 20px;
-    }
+        h1 {
+            font-size: 2.5rem;
+            color: var(--navy-blue);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
 
-    .choices {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
+        .story-text {
+            font-size: 1.1rem;
+            color: var(--black);
+            margin-bottom: 25px;
+            min-height: 60px;
+        }
 
-    .choice-button {
-        background-color: var(--button-color);
-        color: white;
-        border: none;
-        padding: 15px;
-        cursor: pointer;
-        font-size: 1.1em;
-        border-radius: 5px;
-        transition: background-color var(--transition-speed), transform var(--transition-speed);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+        .choice-button {
+            background-color: var(--bright-red);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            margin: 10px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition:
+                background-color 0.3s ease,
+                transform 0.2s ease;
+        }
 
-    .choice-button:hover {
-        background-color: var(--button-hover-color);
-        transform: translateY(-2px);
-    }
+        .choice-button:hover {
+            background-color: var(--navy-blue);
+            transform: scale(1.05);
+        }
 
-    .choice-button:active {
-        background-color: var(--button-color);
-        transform: translateY(2px);
-    }
+        .auth-buttons a,
+        .auth-buttons button {
+            text-decoration: none;
+            color: var(--navy-blue);
+            font-weight: 500;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
 
-    .choice-button:disabled {
-        background-color: #cccccc;
-        cursor: not-allowed;
-    }
+        .auth-buttons a:hover,
+        .auth-buttons button:hover {
+            color: var(--bright-red);
+        }
 
-    .input-field {
-        background-color: var(--input-background);
-        border: 1px solid var(--input-border);
-        padding: 10px;
-        font-size: 1em;
-        border-radius: 5px;
-        width: 100%;
-        margin-bottom: 10px;
-        transition: border-color var(--transition-speed);
-    }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
 
-    .input-field:focus {
-        border-color: var(--button-color);
-        outline: none;
-    }
+        @keyframes slideLeft {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
 
-    .error-message {
-        color: var(--error-color);
-        font-size: 0.9em;
-        margin-top: 10px;
-    }
-  </style>
+        @keyframes slideRight {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .fade-in { animation: fadeIn 1s ease; }
+        .slide-left { animation: slideLeft 0.7s ease; }
+        .slide-right { animation: slideRight 0.7s ease; }
+        .slide-up { animation: slideUp 0.7s ease; }
+        .pulse { animation: pulse 2s infinite; }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                margin: 0 10px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .choice-button {
+                padding: 10px 20px;
+                margin: 5px;
+            }
+        }
+    </style>
 </head>
 <body>
-
 <div class="user-info">
-    <div id="userInfo" class="fade-in">Benvenuto, utente!</div>
+    <div id="userInfo" class="fade-in">Benvenuto, avventuriero!</div>
     <div class="auth-buttons">
-        <a href="login.html" id="loginBtn" class="slide-left">Accedi</a>
-        <a href="registrazione.html" id="registerBtn" class="slide-left">Registrati</a>
+        <a href="#" id="loginBtn" class="slide-left">Accedi</a>
+        <a href="#" id="registerBtn" class="slide-left">Registrati</a>
         <button id="logoutBtn" class="slide-left">Esci</button>
     </div>
 </div>
 
 <div class="container card slide-up">
-  <h1 class="pulse">Benvenuto nel Gioco Interattivo!</h1>
-  <p class="story-text fade-in" id="story-text">Sei un eroe in cerca di avventure. Inizia la tua storia scegliendo un percorso:</p>
+    <h1 class="pulse">Avventura Interattiva</h1>
+    <p class="story-text fade-in" id="story-text">Sei un eroe in cerca di avventure. Inizia la tua storia scegliendo un percorso:</p>
 
-  <div class="choices" id="choices-container">
-    <button class="choice-button slide-right" onclick="goToNextStage('fase1')">Inizia il viaggio</button>
-    <button class="choice-button slide-right" onclick="goToNextStage('fase2')">Prendi una pausa</button>
-  </div>
+    <div class="choices" id="choices-container">
+        <button class="choice-button slide-right" onclick="goToNextStage('fase1')">Inizia il viaggio</button>
+        <button class="choice-button slide-right" onclick="goToNextStage('fase2')">Prendi una pausa</button>
+    </div>
 </div>
 
-<script src="main.js"></script>
 <script>
-  // Inizializza il gestore utenti quando la pagina si carica
-  document.addEventListener('DOMContentLoaded', function() {
-    UserManager.init();
-    
-    // Gestisci il pulsante di logout
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', function() {
-        UserManager.logout();
-      });
+    // Simulazione di un gestore utenti
+    const UserManager = {
+        isLoggedIn: false,
+        init: function() {
+            const userInfo = document.getElementById('userInfo');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const loginBtn = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
+
+            if (this.isLoggedIn) {
+                userInfo.textContent = `Benvenuto, Eroe!`;
+                logoutBtn.style.display = 'inline-block';
+                loginBtn.style.display = 'none';
+                registerBtn.style.display = 'none';
+            } else {
+                userInfo.textContent = 'Benvenuto, avventuriero!';
+                logoutBtn.style.display = 'none';
+                loginBtn.style.display = 'inline-block';
+                registerBtn.style.display = 'inline-block';
+            }
+        },
+        login: function() {
+            this.isLoggedIn = true;
+            this.init();
+        },
+        logout: function() {
+            this.isLoggedIn = false;
+            this.init();
+            currentStage = 'fase1';
+            updateStory();
+        }
+    };
+
+    // Definizione degli stage del gioco
+    const stages = {
+        fase1: {
+            text: "Sei davanti a una foresta oscura. Vuoi entrare o tornare indietro?",
+            choices: [
+                { text: "Entra nella foresta", next: "fase3" },
+                { text: "Torna indietro", next: "fine" }
+            ]
+        },
+        fase2: {
+            text: "Decidi di riposarti in una locanda. Vuoi esplorare la città o continuare a riposare?",
+            choices: [
+                { text: "Esplora la città", next: "fase4" },
+                { text: "Continua a riposare", next: "fine" }
+            ]
+        },
+        fase3: {
+            text: "Dentro la foresta, senti rumori strani. Vuoi avvicinarti o scappare?",
+            choices: [
+                { text: "Avvicinati", next: "fase5" },
+                { text: "Scappa", next: "fine" }
+            ]
+        },
+        fase4: {
+            text: "In città, scopri un misterioso negozio. Vuoi entrare o allontanarti?",
+            choices: [
+                { text: "Entra nel negozio", next: "fase6" },
+                { text: "Allontanati", next: "fine" }
+            ]
+        },
+        fase5: {
+            text: "Scopri un mostro nascosto nella foresta. Sei pronto a combattere?",
+            choices: [
+                { text: "Combatti", next: "vittoria" },
+                { text: "Fuggi", next: "fine" }
+            ]
+        },
+        fase6: {
+            text: "Il negozio è pieno di oggetti strani. Vuoi acquistare qualcosa?",
+            choices: [
+                { text: "Compra un oggetto magico", next: "fase7" },
+                { text: "Esci dal negozio", next: "fine" }
+            ]
+        },
+        fase7: {
+            text: "Hai acquistato un potente oggetto magico! Torni alla foresta per affrontare il mostro.",
+            choices: [
+                { text: "Combatti con l'oggetto magico", next: "vittoria" },
+                { text: "Fuggi", next: "fine" }
+            ]
+        },
+        fine: {
+            text: "La tua avventura è finita. Grazie per aver giocato!",
+            choices: [
+                { text: "Ricomincia", next: "fase1" }
+            ]
+        },
+        vittoria: {
+            text: "Hai vinto! Hai sconfitto il mostro e salvato il regno. Complimenti, eroe!",
+            choices: [
+                { text: "Gioca di nuovo", next: "fase1" },
+                { text: "Esci", next: "fine" }
+            ]
+        }
+    };
+
+    let currentStage = "fase1";
+
+    function updateStory() {
+        const stage = stages[currentStage];
+        document.getElementById("story-text").textContent = stage.text;
+        const choicesContainer = document.getElementById("choices-container");
+        choicesContainer.innerHTML = "";
+        stage.choices.forEach(choice => {
+            const button = document.createElement("button");
+            button.textContent = choice.text;
+            button.classList.add("choice-button", "slide-right");
+            button.onclick = () => goToNextStage(choice.next);
+            choicesContainer.appendChild(button);
+        });
     }
-  });
-  
-  const stages = {
-      fase1: {
-          text: "Sei davanti a una foresta oscura. Vuoi entrare o tornare indietro?",
-          choices: [
-              { text: "Entra nella foresta", next: "fase3" },
-              { text: "Torna indietro", next: "fine" }
-          ]
-      },
-      fase2: {
-          text: "Decidi di riposarti in una locanda. Vuoi esplorare la città o continuare a riposare?",
-          choices: [
-              { text: "Esplora la città", next: "fase4" },
-              { text: "Continua a riposare", next: "fine" }
-          ]
-      },
-      fase3: {
-          text: "Dentro la foresta, senti rumori strani. Vuoi avvicinarti o scappare?",
-          choices: [
-              { text: "Avvicinati", next: "fase5" },
-              { text: "Scappa", next: "fine" }
-          ]
-      },
-      fase4: {
-          text: "In città, scopri un misterioso negozio. Vuoi entrare o allontanarti?",
-          choices: [
-              { text: "Entra nel negozio", next: "fase6" },
-              { text: "Allontanati", next: "fine" }
-          ]
-      },
-      fase5: {
-          text: "Scopri un mostro nascosto nella foresta. Sei pronto a combattere?",
-          choices: [
-              { text: "Combatti", next: "vittoria" },
-              { text: "Fuggi", next: "fine" }
-          ]
-      },
-      fase6: {
-          text: "Il negozio è pieno di oggetti strani. Vuoi acquistare qualcosa?",
-          choices: [
-              { text: "Compra un oggetto magico", next: "fase7" },
-              { text: "Esci dal negozio", next: "fine" }
-          ]
-      },
-      fase7: {
-          text: "Hai acquistato un potente oggetto magico! Torni alla foresta per affrontare il mostro.",
-          choices: [
-              { text: "Combatti con l'oggetto magico", next: "vittoria" },
-              { text: "Fuggi", next: "fine" }
-          ]
-      },
-      fine: {
-          text: "La tua avventura è finita. Grazie per aver giocato!",
-          choices: []
-      },
-      vittoria: {
-          text: "Hai vinto! Hai sconfitto il mostro e salvato il regno. Complimenti, eroe!",
-          choices: [
-              { text: "Gioca di nuovo", next: "fase1" },
-              { text: "Esci", next: "fine" }
-          ]
-      }
-  };
 
-  let currentStage = "fase1";
+    function goToNextStage(nextStage) {
+        currentStage = nextStage;
+        updateStory();
+    }
 
-  function updateStory() {
-      const stage = stages[currentStage];
-      document.getElementById("story-text").textContent = stage.text;
-      const choicesContainer = document.getElementById("choices-container");
-      choicesContainer.innerHTML = "";
-      stage.choices.forEach(choice => {
-          const button = document.createElement("button");
-          button.textContent = choice.text;
-          button.classList.add("choice-button");
-          button.onclick = () => goToNextStage(choice.next);
-          choicesContainer.appendChild(button);
-      });
-  }
+    // Inizializzazione
+    document.addEventListener('DOMContentLoaded', function() {
+        UserManager.init();
 
-  function goToNextStage(nextStage) {
-      currentStage = nextStage;
-      updateStory();
-  }
+        // Aggiungi event listener per login e logout
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            UserManager.login();
+        });
 
-  // Inizializza la storia
-  updateStory();
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            UserManager.logout();
+        });
+
+        // Inizializza la storia
+        updateStory();
+    });
 </script>
-
 </body>
 </html>
