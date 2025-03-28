@@ -1,4 +1,4 @@
-/* Modern.css - File di stile globale per un design moderno e coerente */
+/* Modern.css - File di stile globale unificato per un design coerente */
 
 :root {
     /* Palette colori principale */
@@ -14,13 +14,23 @@
     --success-color: #28a745; /* Messaggi di successo */
     --warning-color: #ffc107; /* Messaggi di avviso */
     
+    /* Variabili di layout */
+    --container-max-width: 1200px;
+    --spacing-unit: 1rem;
+    --border-radius: 8px;
+    
     /* Variabili di animazione */
     --transition-speed: 0.3s;
     --transition-function: cubic-bezier(0.4, 0, 0.2, 1);
     --animation-duration: 0.8s;
+    
+    /* Variabili di tipografia */
+    --font-primary: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+    --font-size-base: 16px;
+    --line-height-base: 1.6;
 }
 
-/* Reset e stili base */
+/* Reset e stili base unificati */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -28,14 +38,24 @@
 }
 
 body {
-    font-family: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+    font-family: var(--font-primary);
+    font-size: var(--font-size-base);
     background-color: var(--sustainable-linen);
     color: var(--black-hole);
-    line-height: 1.6;
+    line-height: var(--line-height-base);
     margin: 0;
     padding: 0;
     overflow-x: hidden;
-    transition: background-color var(--transition-speed) var(--transition-function);
+    transition: all var(--transition-speed) var(--transition-function);
+}
+
+/* Container principale */
+.container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: var(--spacing-unit);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Tipografia moderna */
@@ -109,18 +129,25 @@ header {
     text-decoration: none;
 }
 
-/* Pulsanti */
+/* Pulsanti e azioni */
+/* Stili unificati per pulsanti */
 button, .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 0.8rem 1.5rem;
     background-color: var(--electric-tangerine);
     color: white;
     border: none;
-    border-radius: 8px;
-    font-size: 1rem;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-base);
     font-weight: 600;
     cursor: pointer;
     transition: all var(--transition-speed) var(--transition-function);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    gap: 0.5rem;
+    text-decoration: none;
+    line-height: 1.5;
 }
 
 button:hover, .button:hover {
@@ -134,38 +161,105 @@ button:active, .button:active {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Contenitori */
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem;
+button:disabled, .button:disabled {
+    background-color: var(--border-color);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Messaggi di stato */
+.message {
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-unit);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.message-success {
+    background-color: rgba(40, 167, 69, 0.1);
+    border: 1px solid var(--success-color);
+    color: var(--success-color);
+}
+
+.message-error {
+    background-color: rgba(217, 48, 37, 0.1);
+    border: 1px solid var(--error-color);
+    color: var(--error-color);
+}
+
+.message-warning {
+    background-color: rgba(255, 193, 7, 0.1);
+    border: 1px solid var(--warning-color);
+    color: var(--warning-color);
+}
+
+.message-info {
+    background-color: rgba(255, 109, 31, 0.1);
+    border: 1px solid var(--electric-tangerine);
+    color: var(--electric-tangerine);
+}
+
+/* Layout e contenitori */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-unit);
+    margin: var(--spacing-unit) 0;
 }
 
 .card {
-    background-color: white;
-    border-radius: 12px;
-    padding: 2rem;
-    margin-bottom: 2rem;
+    background-color: var(--input-background);
+    border-radius: var(--border-radius);
+    padding: calc(var(--spacing-unit) * 1.5);
+    margin-bottom: var(--spacing-unit);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
-    transition: transform var(--transition-speed) var(--transition-function), 
-                box-shadow var(--transition-speed) var(--transition-function);
+    transition: all var(--transition-speed) var(--transition-function);
+    border: 1px solid var(--border-color);
 }
 
 .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+    border-color: var(--electric-tangerine);
 }
 
-/* Form elements */
+.card-header {
+    margin-bottom: var(--spacing-unit);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--spacing-unit);
+}
+
+.card-content {
+    margin-bottom: var(--spacing-unit);
+}
+
+.card-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-unit);
+    padding-top: var(--spacing-unit);
+    border-top: 1px solid var(--border-color);
+}
+
+/* Form elements unificati */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
 input, textarea, select {
     width: 100%;
     padding: 0.8rem 1rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
     border: 1px solid var(--input-border);
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color var(--transition-speed) var(--transition-function), 
-                box-shadow var(--transition-speed) var(--transition-function);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-base);
+    background-color: var(--input-background);
+    color: var(--black-hole);
+    transition: all var(--transition-speed) var(--transition-function);
 }
 
 input:focus, textarea:focus, select:focus {
@@ -179,6 +273,50 @@ label {
     margin-bottom: 0.5rem;
     font-weight: 500;
     color: var(--black-hole);
+}
+
+.form-error {
+    color: var(--error-color);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.form-success {
+    color: var(--success-color);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Navigazione unificata */
+.nav {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--recycled-cotton);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.nav-list {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item a {
+    color: var(--black-hole);
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    transition: all var(--transition-speed) var(--transition-function);
+}
+
+.nav-item a:hover,
+.nav-item a.active {
+    background-color: var(--electric-tangerine);
+    color: white;
 }
 
 /* Animazioni */
