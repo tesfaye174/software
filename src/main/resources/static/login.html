@@ -1,10 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        /* Colori e stili principali */
+        :root {
+            --background-color: #FAF3E1; /* Sustainable Linen */
+            --text-color: #222222; /* Black Hole */
+            --border-color: #F5E7C6; /* Recycled Cotton */
+            --button-color: #FF6D1F; /* Electric Tangerine */
+            --button-hover-color: #D85C19; /* Versione scura di Electric Tangerine */
+            --input-background: #ffffff; /* Bianco */
+            --input-border: #F5E7C6; /* Recycled Cotton */
+            --error-color: #D93025; /* Rosso errore */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        section {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 2rem;
+            background-color: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        label {
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            color: var(--text-color);
+            background-color: var(--input-background);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--button-color);
+        }
+
+        input.error {
+            border-color: var(--error-color);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            background-color: var(--button-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--button-hover-color);
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        p {
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        p a {
+            color: var(--button-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        p a:hover {
+            color: var(--button-hover-color);
+        }
+    </style>
 </head>
 <body>
-$END$
+<!-- Sezione Login -->
+<section id="login">
+    <h2>Accedi al tuo account</h2>
+    <form id="form-login">
+        <label for="email-login">Email:</label>
+        <input type="email" id="email-login" placeholder="Inserisci la tua email" required>
+
+        <label for="password-login">Password:</label>
+        <input type="password" id="password-login" placeholder="Inserisci la tua password" required>
+
+        <button type="button" onclick="login()">Accedi</button>
+    </form>
+    <p>Non hai un account? <a href="registrazione.html">Registrati qui</a></p>
+    <p><a href="index.html">torna alla home</a></p>
+</section>
+
+<script>
+    // Funzione di login
+    function login() {
+        const email = document.getElementById('email-login').value;
+        const password = document.getElementById('password-login').value;
+
+        // Simulazione di verifica credenziali (puoi collegarlo a un backend)
+        if (email === "test@example.com" && password === "password123") {
+            alert("Login effettuato con successo!");
+            // Reindirizza l'utente alla home.html
+            window.location.href = "home.html";
+        } else {
+            alert("Credenziali non valide. Riprova.");
+            document.getElementById('email-login').classList.add('error');
+            document.getElementById('password-login').classList.add('error');
+        }
+    }
+</script>
 </body>
 </html>

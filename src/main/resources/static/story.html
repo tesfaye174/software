@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storia Interattiva</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Colori e stili principali */
+        :root {
+            --sustainable-linen: #FAF3E1; /* Sustainable Linen */
+            --recycled-cotton: #F5E7C6; /* Recycled Cotton */
+            --electric-tangerine: #FF6D1F; /* Electric Tangerine */
+            --black-hole: #222222; /* Black Hole */
+            --border-color: #d2d2d7; /* Grigio bordo */
+            --button-hover-color: #D85C19; /* Versione scura di Electric Tangerine */
+            --input-background: #ffffff; /* Bianco */
+            --input-border: #d2d2d7; /* Grigio bordo */
+            --error-color: #d93025; /* Rosso errore */
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--sustainable-linen);
+            color: var(--black-hole);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--electric-tangerine);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background-color: var(--recycled-cotton);
+        }
+
+        .story-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .story-title {
+            font-size: 2rem;
+            color: var(--electric-tangerine);
+            margin-bottom: 1rem;
+        }
+
+        .story-content {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .choice-button {
+            padding: 1rem;
+            background-color: var(--electric-tangerine);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .choice-button:hover {
+            background-color: var(--button-hover-color);
+            transform: translateY(-2px);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .back-button {
+            padding: 0.5rem 1rem;
+            background-color: var(--recycled-cotton);
+            color: var(--black-hole);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .back-button:hover {
+            background-color: #e5d7b6;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: var(--electric-tangerine);
+        }
+
+        .error {
+            color: var(--error-color);
+            text-align: center;
+            padding: 1rem;
+            background-color: #ffebee;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Storia Interattiva</h1>
+    </header>
+
+    <div class="user-info">
+        <div id="userInfo" style="display: none;">Benvenuto, utente!</div>
+        <div class="auth-buttons">
+            <a href="login.html" id="loginBtn">Accedi</a>
+            <a href="registrazione.html" id="registerBtn">Registrati</a>
+            <button id="logoutBtn" style="display: none;">Esci</button>
+        </div>
+    </div>
+
+    <div class="story-container">
+        <div id="storyContainer">
+            <p class="loading">Caricamento della storia...</p>
+        </div>
+
+        <div id="choicesContainer" class="choices-container">
+            <!-- Le scelte verranno generate dinamicamente qui -->
+        </div>
+
+        <div class="navigation">
+            <button id="backButton" class="back-button">Torna Indietro</button>
+            <a href="index.html" class="back-button">Torna alla Home</a>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inizializza il gestore utenti
+            UserManager.init();
+            
+            // Ottieni l'ID della storia dall'URL (default: 1)
+            const urlParams = new URLSearchParams(window.location.search);
+            const storyId = urlParams.get('id') || 1;
+            
+            // Carica la storia
+            StoryManager.loadStory(storyId, (error, story) => {
+                if (error) {
+                    document.getElementById('storyContainer').innerHTML = `
+                        <div class="error">Errore nel caricamento della storia: ${error.message || 'Errore sconosciuto'}</div>
+                    `;
+                }
+            });
+            
+            // Gestisci il pulsante "Torna Indietro"
+            document.getElementById('backButton').addEventListener('click', function() {
+                StoryManager.goBack();
+            });
+            
+            // Gestisci il pulsante di logout
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                UserManager.logout();
+            });
+        });
+    </script>
+</body>
+</html>

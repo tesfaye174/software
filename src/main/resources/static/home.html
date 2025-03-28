@@ -1,10 +1,223 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gioco Interattivo - Home</title>
+  <style>
+    :root {
+        --background-color: #FAF3E1; /* Sustainable Linen */
+        --text-color: #222222; /* Black Hole */
+        --border-color: #F5E7C6; /* Recycled Cotton */
+        --button-color: #FF6D1F; /* Electric Tangerine */
+        --button-hover-color: #D85C19; /* Versione scura di Electric Tangerine */
+        --input-background: #ffffff; /* Bianco */
+        --input-border: #F5E7C6; /* Recycled Cotton */
+        --error-color: #D93025; /* Rosso errore */
+        --transition-speed: 0.3s;
+    }
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: var(--background-color);
+        margin: 0;
+        padding: 0;
+        color: var(--text-color);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
+        background-image: url('https://example.com/your-background-image.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }
+
+    .container {
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 80%;
+        max-width: 600px;
+        transition: transform var(--transition-speed);
+    }
+
+    .container:hover {
+        transform: scale(1.05);
+    }
+
+    h1 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        color: var(--text-color);
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .story-text {
+        font-size: 1.2em;
+        line-height: 1.6;
+        color: var(--text-color);
+        margin-bottom: 20px;
+    }
+
+    .choices {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .choice-button {
+        background-color: var(--button-color);
+        color: white;
+        border: none;
+        padding: 15px;
+        cursor: pointer;
+        font-size: 1.1em;
+        border-radius: 5px;
+        transition: background-color var(--transition-speed), transform var(--transition-speed);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .choice-button:hover {
+        background-color: var(--button-hover-color);
+        transform: translateY(-2px);
+    }
+
+    .choice-button:active {
+        background-color: var(--button-color);
+        transform: translateY(2px);
+    }
+
+    .choice-button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
+
+    .input-field {
+        background-color: var(--input-background);
+        border: 1px solid var(--input-border);
+        padding: 10px;
+        font-size: 1em;
+        border-radius: 5px;
+        width: 100%;
+        margin-bottom: 10px;
+        transition: border-color var(--transition-speed);
+    }
+
+    .input-field:focus {
+        border-color: var(--button-color);
+        outline: none;
+    }
+
+    .error-message {
+        color: var(--error-color);
+        font-size: 0.9em;
+        margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-$END$
+
+<div class="container">
+  <h1>Benvenuto nel Gioco Interattivo!</h1>
+  <p class="story-text" id="story-text">Sei un eroe in cerca di avventure. Inizia la tua storia scegliendo un percorso:</p>
+
+  <div class="choices" id="choices-container">
+    <button class="choice-button" onclick="goToNextStage('fase1')">Inizia il viaggio</button>
+    <button class="choice-button" onclick="goToNextStage('fase2')">Prendi una pausa</button>
+  </div>
+</div>
+
+<script>
+  const stages = {
+      fase1: {
+          text: "Sei davanti a una foresta oscura. Vuoi entrare o tornare indietro?",
+          choices: [
+              { text: "Entra nella foresta", next: "fase3" },
+              { text: "Torna indietro", next: "fine" }
+          ]
+      },
+      fase2: {
+          text: "Decidi di riposarti in una locanda. Vuoi esplorare la città o continuare a riposare?",
+          choices: [
+              { text: "Esplora la città", next: "fase4" },
+              { text: "Continua a riposare", next: "fine" }
+          ]
+      },
+      fase3: {
+          text: "Dentro la foresta, senti rumori strani. Vuoi avvicinarti o scappare?",
+          choices: [
+              { text: "Avvicinati", next: "fase5" },
+              { text: "Scappa", next: "fine" }
+          ]
+      },
+      fase4: {
+          text: "In città, scopri un misterioso negozio. Vuoi entrare o allontanarti?",
+          choices: [
+              { text: "Entra nel negozio", next: "fase6" },
+              { text: "Allontanati", next: "fine" }
+          ]
+      },
+      fase5: {
+          text: "Scopri un mostro nascosto nella foresta. Sei pronto a combattere?",
+          choices: [
+              { text: "Combatti", next: "vittoria" },
+              { text: "Fuggi", next: "fine" }
+          ]
+      },
+      fase6: {
+          text: "Il negozio è pieno di oggetti strani. Vuoi acquistare qualcosa?",
+          choices: [
+              { text: "Compra un oggetto magico", next: "fase7" },
+              { text: "Esci dal negozio", next: "fine" }
+          ]
+      },
+      fase7: {
+          text: "Hai acquistato un potente oggetto magico! Torni alla foresta per affrontare il mostro.",
+          choices: [
+              { text: "Combatti con l'oggetto magico", next: "vittoria" },
+              { text: "Fuggi", next: "fine" }
+          ]
+      },
+      fine: {
+          text: "La tua avventura è finita. Grazie per aver giocato!",
+          choices: []
+      },
+      vittoria: {
+          text: "Hai vinto! Hai sconfitto il mostro e salvato il regno. Complimenti, eroe!",
+          choices: [
+              { text: "Gioca di nuovo", next: "fase1" },
+              { text: "Esci", next: "fine" }
+          ]
+      }
+  };
+
+  let currentStage = "fase1";
+
+  function updateStory() {
+      const stage = stages[currentStage];
+      document.getElementById("story-text").textContent = stage.text;
+      const choicesContainer = document.getElementById("choices-container");
+      choicesContainer.innerHTML = "";
+      stage.choices.forEach(choice => {
+          const button = document.createElement("button");
+          button.textContent = choice.text;
+          button.classList.add("choice-button");
+          button.onclick = () => goToNextStage(choice.next);
+          choicesContainer.appendChild(button);
+      });
+  }
+
+  function goToNextStage(nextStage) {
+      currentStage = nextStage;
+      updateStory();
+  }
+
+  // Inizializza la storia
+  updateStory();
+</script>
+
 </body>
 </html>

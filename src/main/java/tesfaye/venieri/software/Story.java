@@ -2,26 +2,38 @@ package tesfaye.venieri.software;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 public class Story {
-    private @Id
-    @GeneratedValue Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private String name;
-//    private List<Story> next;
+    private String title;
+    private String content;
+    private boolean isEnding;
+    
+    @OneToMany(mappedBy = "currentStory", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Choice> choices = new ArrayList<>();
 
-    public Story(){}
+    // Costruttori
+    public Story() {}
 
-    public Story(String name, List<Story> next) {
-        this.name = name;
-//        this.next = next;
+    public Story(String title, String content, boolean isEnding) {
+        this.title = title;
+        this.content = content;
+        this.isEnding = isEnding;
     }
 
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -30,41 +42,70 @@ public class Story {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
-
-//    public List<Story> getNext() {
-//        return next;
-//    }
-//
-//    public void setNext(List<Story> next) {
-//        this.next = next;
-//    }
+    
+    public String getContent() {
+        return content;
+    }
+    
+    public void setContent(String content) {
+        this.content = content;
+    }
+    
+    public boolean isEnding() {
+        return isEnding;
+    }
+    
+    public void setEnding(boolean isEnding) {
+        this.isEnding = isEnding;
+    }
+    
+    public List<Choice> getChoices() {
+        return choices;
+    }
+    
+    public void setChoices(List<Choice> choices) {
+        this.choices = choices;
+    }
+    
+    public void addChoice(Choice choice) {
+        choices.add(choice);
+        choice.setCurrentStory(this);
+    }
+    
+    public void removeChoice(Choice choice) {
+        choices.remove(choice);
+        choice.setCurrentStory(null);
+    }
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (!(o instanceof Story story)) return false;
-        return Objects.equals(id, story.id) && Objects.equals(name, story.name);
-//        return Objects.equals(id, story.id) && Objects.equals(name, story.name) && Objects.equals(next, story.next);
+        return Objects.equals(id, story.id) && 
+               Objects.equals(title, story.title) && 
+               Objects.equals(content, story.content) &&
+               isEnding == story.isEnding;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
-//        return Objects.hash(id, name, next);
+        return Objects.hash(id, title, content, isEnding);
     }
 
     @Override
     public String toString() {
         return "Story{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-//                ", next=" + next +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", isEnding=" + isEnding +
                 '}';
     }
 }
