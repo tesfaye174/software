@@ -3,22 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="modern.css">
+    <title>Login - Storie Interattive</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* Colori e stili principali */
         :root {
-            --background-color: #FAF3E1; /* Sustainable Linen */
-            --text-color: #222222; /* Black Hole */
-            --border-color: #F5E7C6; /* Recycled Cotton */
-            --button-color: #FF6D1F; /* Electric Tangerine */
-            --button-hover-color: #D85C19; /* Versione scura di Electric Tangerine */
-            --input-background: #ffffff; /* Bianco */
-            --input-border: #F5E7C6; /* Recycled Cotton */
-            --error-color: #D93025; /* Rosso errore */
+            /* Color Palette */
+            --background-color: #F3F3F3;
+            --text-color: #222222;
+            --primary-color: #31456A;
+            --secondary-color: #DD3838;
+            --white: #FFFFFF;
+            --input-border: #D2D2D7;
         }
 
         * {
@@ -28,67 +25,76 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
         }
 
         section {
-            max-width: 400px;
-            margin: 50px auto;
-            padding: 2rem;
-            background-color: #fff;
-            border: 1px solid var(--border-color);
+            background-color: var(--white);
             border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 2.5rem;
+            text-align: center;
         }
 
         h2 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            font-weight: 700;
         }
 
         form {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 1.5rem;
         }
 
         label {
+            text-align: left;
             font-size: 0.9rem;
             color: var(--text-color);
+            font-weight: 500;
         }
 
         input {
             width: 100%;
-            padding: 0.8rem;
+            padding: 0.75rem;
             font-size: 1rem;
-            color: var(--text-color);
-            background-color: var(--input-background);
             border: 1px solid var(--input-border);
             border-radius: 8px;
             outline: none;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
         input:focus {
-            border-color: var(--button-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(49, 69, 106, 0.1);
         }
 
         input.error {
-            border-color: var(--error-color);
+            border-color: var(--secondary-color);
         }
 
         button {
             width: 100%;
             padding: 1rem;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 600;
-            color: #fff;
-            background-color: var(--button-color);
+            color: var(--white);
+            background-color: var(--secondary-color);
             border: none;
             border-radius: 8px;
             cursor: pointer;
@@ -96,73 +102,118 @@
         }
 
         button:hover {
-            background-color: var(--button-hover-color);
-            transform: translateY(-1px);
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
         }
 
         button:active {
             transform: translateY(1px);
         }
 
-        p {
+        .form-footer {
+            margin-top: 1.5rem;
             font-size: 0.9rem;
-            text-align: center;
-            margin-top: 1rem;
         }
 
-        p a {
-            color: var(--button-color);
+        .form-footer a {
+            color: var(--primary-color);
             text-decoration: none;
             transition: color 0.3s;
         }
 
-        p a:hover {
-            color: var(--button-hover-color);
+        .form-footer a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .fade-in { animation: fadeIn 1s ease; }
+        .slide-up { animation: slideUp 1s ease; }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .container {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            section {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
-<!-- Sezione Login -->
 <div class="container">
-    <section id="login" class="card slide-up">
+    <section id="login" class="slide-up">
         <h2 class="fade-in">Accedi al tuo account</h2>
-        <form id="form-login" class="slide-left">
-            <label for="email-login">Email:</label>
-            <input type="email" id="email-login" placeholder="Inserisci la tua email" required>
+        <form id="form-login" class="fade-in">
+            <div>
+                <label for="email-login">Email:</label>
+                <input type="email" id="email-login" placeholder="Inserisci la tua email" required>
+            </div>
 
-            <label for="password-login">Password:</label>
-            <input type="password" id="password-login" placeholder="Inserisci la tua password" required>
+            <div>
+                <label for="password-login">Password:</label>
+                <input type="password" id="password-login" placeholder="Inserisci la tua password" required>
+            </div>
 
-            <button type="button" onclick="login()" class="pulse">Accedi</button>
+            <button type="button" onclick="login()">Accedi</button>
         </form>
-        <p class="fade-in">Non hai un account? <a href="registrazione.html">Registrati qui</a></p>
-        <p class="fade-in"><a href="index.html">Torna alla home</a></p>
+        <div class="form-footer">
+            <p>Non hai un account? <a href="registrazione.html">Registrati qui</a></p>
+            <p><a href="index.html">Torna alla home</a></p>
+        </div>
     </section>
 </div>
 
-<script src="main.js"></script>
 <script>
-    // Funzione di login
+    // User Management Script
+    const UserManager = {
+        currentUser: null,
+        init: function() {
+            // Initialization logic
+        },
+        login: function(email, password, callback) {
+            // Simulated login
+            if (email && password) {
+                this.currentUser = { email: email };
+                callback(null, this.currentUser);
+                window.location.href = "home.html";
+            } else {
+                callback(new Error("Credenziali non valide"));
+            }
+        }
+    };
+
     function login() {
         const email = document.getElementById('email-login').value;
         const password = document.getElementById('password-login').value;
-        
-        // Usa UserManager per effettuare il login
-        UserManager.login(email, password, (error, data) => {
+
+        UserManager.login(email, password, (error) => {
             if (error) {
                 alert("Errore di login: " + (error.message || "Credenziali non valide"));
                 document.getElementById('email-login').classList.add('error');
                 document.getElementById('password-login').classList.add('error');
-                return;
             }
-            
-            alert("Login effettuato con successo!");
-            // Reindirizza l'utente alla home.html
-            window.location.href = "home.html";
         });
     }
-    
-    // Inizializza il gestore utenti quando la pagina si carica
+
     document.addEventListener('DOMContentLoaded', function() {
         UserManager.init();
     });
