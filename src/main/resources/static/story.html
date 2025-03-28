@@ -3,189 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Storia Interattiva</title>
-    <link rel="stylesheet" href="modern.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Crea Una Storia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        /* Colori e stili principali */
-        :root {
-            --sustainable-linen: #FAF3E1; /* Sustainable Linen */
-            --recycled-cotton: #F5E7C6; /* Recycled Cotton */
-            --electric-tangerine: #FF6D1F; /* Electric Tangerine */
-            --black-hole: #222222; /* Black Hole */
-            --border-color: #d2d2d7; /* Grigio bordo */
-            --button-hover-color: #D85C19; /* Versione scura di Electric Tangerine */
-            --input-background: #ffffff; /* Bianco */
-            --input-border: #d2d2d7; /* Grigio bordo */
-            --error-color: #d93025; /* Rosso errore */
-        }
-
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: var(--sustainable-linen);
-            color: var(--black-hole);
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: var(--electric-tangerine);
-            color: white;
-            padding: 1rem;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .user-info {
+            font-family: 'Roboto', sans-serif;
+            background-color: #F3F3F3;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            padding: 0.5rem 1rem;
-            background-color: var(--recycled-cotton);
+            height: 100vh;
+            margin: 0;
         }
-
-        .story-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background-color: white;
+        .container {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 10px 10px 20px #B9BCC1, -10px -10px 20px #FFFFFF;
+            width: 400px;
+            text-align: center;
+        }
+        h1 {
+            color: #31456A;
+            font-weight: 700;
+        }
+        .form-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: 400;
+            color: #222222;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: none;
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background: #F3F3F3;
+            box-shadow: inset 5px 5px 10px #B9BCC1, inset -5px -5px 10px #FFFFFF;
+            font-size: 14px;
         }
-
-        .story-title {
-            font-size: 2rem;
-            color: var(--electric-tangerine);
-            margin-bottom: 1rem;
-        }
-
-        .story-content {
-            font-size: 1.2rem;
-            line-height: 1.8;
-            margin-bottom: 2rem;
-        }
-
-        .choices-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .choice-button {
-            padding: 1rem;
-            background-color: var(--electric-tangerine);
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #31456A;
             color: white;
+            font-size: 16px;
             border: none;
-            border-radius: 5px;
-            font-size: 1rem;
+            border-radius: 10px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
+            transition: 0.3s;
+            box-shadow: 5px 5px 10px #B9BCC1, -5px -5px 10px #FFFFFF;
         }
-
-        .choice-button:hover {
-            background-color: var(--button-hover-color);
-            transform: translateY(-2px);
+        button:hover {
+            background: #222222;
         }
-
-        .navigation {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 2rem;
-        }
-
-        .back-button {
-            padding: 0.5rem 1rem;
-            background-color: var(--recycled-cotton);
-            color: var(--black-hole);
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .back-button:hover {
-            background-color: #e5d7b6;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            font-size: 1.2rem;
-            color: var(--electric-tangerine);
-        }
-
-        .error {
-            color: var(--error-color);
-            text-align: center;
-            padding: 1rem;
-            background-color: #ffebee;
-            border-radius: 5px;
-            margin-bottom: 1rem;
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #31456A;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Storia Interattiva</h1>
-    </header>
-
-    <div class="user-info">
-        <div id="userInfo" class="fade-in">Benvenuto, utente!</div>
-        <div class="auth-buttons">
-            <a href="login.html" id="loginBtn" class="slide-left">Accedi</a>
-            <a href="registrazione.html" id="registerBtn" class="slide-left">Registrati</a>
-            <button id="logoutBtn" class="slide-left">Esci</button>
+<div class="container">
+    <h1>Crea la Tua Storia</h1>
+    <form id="storyForm">
+        <div class="form-group">
+            <label for="storyTitle">Titolo della Storia</label>
+            <input type="text" id="storyTitle" name="storyTitle" required>
         </div>
-    </div>
-
-    <div class="container">
-        <div class="story-container card slide-up">
-            <div id="storyContainer" class="fade-in">
-                <p class="loading">Caricamento della storia...</p>
-            </div>
-
-            <div id="choicesContainer" class="choices-container slide-right">
-                <!-- Le scelte verranno generate dinamicamente qui -->
-            </div>
-
-            <div class="navigation fade-in">
-                <button id="backButton" class="back-button">Torna Indietro</button>
-                <a href="index.html" class="back-button">Torna alla Home</a>
-            </div>
+        <div class="form-group">
+            <label for="storyGenre">Genere</label>
+            <select id="storyGenre" name="storyGenre">
+                <option value="fantasy">Fantasy</option>
+                <option value="avventura">Avventura</option>
+                <option value="mistero">Mistero</option>
+                <option value="scienzaFiction">Scienza Fiction</option>
+            </select>
         </div>
-    </div>
-
-    <script src="main.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Inizializza il gestore utenti
-            UserManager.init();
-            
-            // Ottieni l'ID della storia dall'URL (default: 1)
-            const urlParams = new URLSearchParams(window.location.search);
-            const storyId = urlParams.get('id') || 1;
-            
-            // Carica la storia
-            StoryManager.loadStory(storyId, (error, story) => {
-                if (error) {
-                    document.getElementById('storyContainer').innerHTML = `
-                        <div class="error">Errore nel caricamento della storia: ${error.message || 'Errore sconosciuto'}</div>
-                    `;
-                }
-            });
-            
-            // Gestisci il pulsante "Torna Indietro"
-            document.getElementById('backButton').addEventListener('click', function() {
-                StoryManager.goBack();
-            });
-            
-            // Gestisci il pulsante di logout
-            document.getElementById('logoutBtn').addEventListener('click', function() {
-                UserManager.logout();
-            });
-        });
-    </script>
+        <div class="form-group">
+            <label for="storyDescription">Descrizione</label>
+            <textarea id="storyDescription" name="storyDescription" rows="5" required></textarea>
+        </div>
+        <button type="submit">Crea Storia</button>
+    </form>
+    <a href="index.html" class="back-link">Torna alla Home</a>
+</div>
+<script>
+    document.getElementById('storyForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const title = document.getElementById('storyTitle').value;
+        const genre = document.getElementById('storyGenre').value;
+        const description = document.getElementById('storyDescription').value;
+        alert(`Storia Creata!\n\nTitolo: ${title}\nGenere: ${genre}\nDescrizione: ${description}`);
+        this.reset();
+    });
+</script>
 </body>
 </html>
