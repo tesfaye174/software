@@ -2,7 +2,7 @@
 
 ## 🌟 Project Overview
 
-This is a web application that allows users to write and play interactive stories, developed as an academic project for the academic year 2023/24.
+This is a web application that allows users to write and play interactive stories, developed as an academic project for the academic year 2024/25.
 
 ## 📚 Project Description
 
