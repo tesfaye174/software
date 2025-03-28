@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gioco Interattivo - Home</title>
+  <link rel="stylesheet" href="modern.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
         --background-color: #FAF3E1; /* Sustainable Linen */
@@ -120,22 +124,22 @@
 </head>
 <body>
 
-<div class="user-info" style="background-color: var(--border-color); padding: 10px; display: flex; justify-content: space-between; align-items: center;">
-    <div id="userInfo" style="display: none;">Benvenuto, utente!</div>
+<div class="user-info">
+    <div id="userInfo" class="fade-in">Benvenuto, utente!</div>
     <div class="auth-buttons">
-        <a href="login.html" id="loginBtn" style="margin-right: 10px;">Accedi</a>
-        <a href="registrazione.html" id="registerBtn">Registrati</a>
-        <button id="logoutBtn" style="display: none; background-color: var(--button-color); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Esci</button>
+        <a href="login.html" id="loginBtn" class="slide-left">Accedi</a>
+        <a href="registrazione.html" id="registerBtn" class="slide-left">Registrati</a>
+        <button id="logoutBtn" class="slide-left">Esci</button>
     </div>
 </div>
 
-<div class="container">
-  <h1>Benvenuto nel Gioco Interattivo!</h1>
-  <p class="story-text" id="story-text">Sei un eroe in cerca di avventure. Inizia la tua storia scegliendo un percorso:</p>
+<div class="container card slide-up">
+  <h1 class="pulse">Benvenuto nel Gioco Interattivo!</h1>
+  <p class="story-text fade-in" id="story-text">Sei un eroe in cerca di avventure. Inizia la tua storia scegliendo un percorso:</p>
 
   <div class="choices" id="choices-container">
-    <button class="choice-button" onclick="goToNextStage('fase1')">Inizia il viaggio</button>
-    <button class="choice-button" onclick="goToNextStage('fase2')">Prendi una pausa</button>
+    <button class="choice-button slide-right" onclick="goToNextStage('fase1')">Inizia il viaggio</button>
+    <button class="choice-button slide-right" onclick="goToNextStage('fase2')">Prendi una pausa</button>
   </div>
 </div>
 

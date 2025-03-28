@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Storia Interattiva</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="modern.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* Colori e stili principali */
         :root {
@@ -129,26 +132,28 @@
     </header>
 
     <div class="user-info">
-        <div id="userInfo" style="display: none;">Benvenuto, utente!</div>
+        <div id="userInfo" class="fade-in">Benvenuto, utente!</div>
         <div class="auth-buttons">
-            <a href="login.html" id="loginBtn">Accedi</a>
-            <a href="registrazione.html" id="registerBtn">Registrati</a>
-            <button id="logoutBtn" style="display: none;">Esci</button>
+            <a href="login.html" id="loginBtn" class="slide-left">Accedi</a>
+            <a href="registrazione.html" id="registerBtn" class="slide-left">Registrati</a>
+            <button id="logoutBtn" class="slide-left">Esci</button>
         </div>
     </div>
 
-    <div class="story-container">
-        <div id="storyContainer">
-            <p class="loading">Caricamento della storia...</p>
-        </div>
+    <div class="container">
+        <div class="story-container card slide-up">
+            <div id="storyContainer" class="fade-in">
+                <p class="loading">Caricamento della storia...</p>
+            </div>
 
-        <div id="choicesContainer" class="choices-container">
-            <!-- Le scelte verranno generate dinamicamente qui -->
-        </div>
+            <div id="choicesContainer" class="choices-container slide-right">
+                <!-- Le scelte verranno generate dinamicamente qui -->
+            </div>
 
-        <div class="navigation">
-            <button id="backButton" class="back-button">Torna Indietro</button>
-            <a href="index.html" class="back-button">Torna alla Home</a>
+            <div class="navigation fade-in">
+                <button id="backButton" class="back-button">Torna Indietro</button>
+                <a href="index.html" class="back-button">Torna alla Home</a>
+            </div>
         </div>
     </div>
 

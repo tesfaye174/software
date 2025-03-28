@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="stylesheet" href="modern.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* Colori e stili principali */
         :root {
@@ -119,20 +123,22 @@
 </head>
 <body>
 <!-- Sezione Login -->
-<section id="login">
-    <h2>Accedi al tuo account</h2>
-    <form id="form-login">
-        <label for="email-login">Email:</label>
-        <input type="email" id="email-login" placeholder="Inserisci la tua email" required>
+<div class="container">
+    <section id="login" class="card slide-up">
+        <h2 class="fade-in">Accedi al tuo account</h2>
+        <form id="form-login" class="slide-left">
+            <label for="email-login">Email:</label>
+            <input type="email" id="email-login" placeholder="Inserisci la tua email" required>
 
-        <label for="password-login">Password:</label>
-        <input type="password" id="password-login" placeholder="Inserisci la tua password" required>
+            <label for="password-login">Password:</label>
+            <input type="password" id="password-login" placeholder="Inserisci la tua password" required>
 
-        <button type="button" onclick="login()">Accedi</button>
-    </form>
-    <p>Non hai un account? <a href="registrazione.html">Registrati qui</a></p>
-    <p><a href="index.html">torna alla home</a></p>
-</section>
+            <button type="button" onclick="login()" class="pulse">Accedi</button>
+        </form>
+        <p class="fade-in">Non hai un account? <a href="registrazione.html">Registrati qui</a></p>
+        <p class="fade-in"><a href="index.html">Torna alla home</a></p>
+    </section>
+</div>
 
 <script src="main.js"></script>
 <script>
