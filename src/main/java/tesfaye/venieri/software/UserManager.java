@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import tesfaye.venieri.software.Model.Story;
+import tesfaye.venieri.software.Model.User;
+
 public class UserManager {
     // Singleton instance
     private static UserManager instance;
@@ -27,50 +30,11 @@ public class UserManager {
         return instance;
     }
 
-    // User class to represent user details
-    public static class User {
-        private String email;
-        private String username;
-        private LocalDate joinedDate;
-
-        public User(String email) {
-            this.email = email;
-            this.username = email.split("@")[0];
-            this.joinedDate = LocalDate.now();
-        }
-
-        // Getters
-        public String getEmail() { return email; }
-        public String getUsername() { return username; }
-        public LocalDate getJoinedDate() { return joinedDate; }
-    }
-
-    // Story class to represent user stories
-    public static class Story {
-        private long id;
-        private String title;
-        private String content;
-        private String author;
-
-        public Story(String title, String content, String author) {
-            this.id = System.currentTimeMillis();
-            this.title = title;
-            this.content = content;
-            this.author = author;
-        }
-
-        // Getters
-        public long getId() { return id; }
-        public String getTitle() { return title; }
-        public String getContent() { return content; }
-        public String getAuthor() { return author; }
-    }
-
     // Login method
     public boolean login(String email, String password) {
         // In a real application, you'd validate credentials against a database
         if (email != null && !email.isEmpty() && password != null && !password.isEmpty()) {
-            this.currentUser = new User(email);
+            this.currentUser = new User(email, password, email);
             return true;
         }
         return false;
@@ -94,7 +58,7 @@ public class UserManager {
     // Create a new story
     public Story createStory(String title, String content) {
         if (isLoggedIn()) {
-            Story newStory = new Story(title, content, currentUser.getUsername());
+            Story newStory = new Story(title, content, false);
             stories.add(newStory);
             return newStory;
         }
@@ -104,13 +68,8 @@ public class UserManager {
     // Get stories by current user
     public List<Story> getUserStories() {
         if (isLoggedIn()) {
-            List<Story> userStories = new ArrayList<>();
-            for (Story story : stories) {
-                if (story.getAuthor().equals(currentUser.getUsername())) {
-                    userStories.add(story);
-                }
-            }
-            return userStories;
+            // Restituisce tutte le storie poiché la classe Story non ha più il campo author
+            return new ArrayList<>(stories);
         }
         return new ArrayList<>();
     }

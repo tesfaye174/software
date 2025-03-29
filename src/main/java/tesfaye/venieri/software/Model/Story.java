@@ -1,4 +1,4 @@
-package tesfaye.venieri.software;
+package tesfaye.venieri.software.Model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -49,31 +49,32 @@ public class Story {
     public void setTitle(String title) {
         this.title = title;
     }
-    
+
     public String getContent() {
         return content;
     }
-    
+
     public void setContent(String content) {
         this.content = content;
     }
-    
+
     public boolean isEnding() {
         return isEnding;
     }
-    
+
     public void setEnding(boolean isEnding) {
         this.isEnding = isEnding;
     }
-    
+
     public List<Choice> getChoices() {
         return choices;
     }
-    
+
     public void setChoices(List<Choice> choices) {
         this.choices = choices;
     }
     
+    // Metodi per gestire la relazione bidirezionale
     public void addChoice(Choice choice) {
         choices.add(choice);
         choice.setCurrentStory(this);
@@ -83,22 +84,20 @@ public class Story {
         choices.remove(choice);
         choice.setCurrentStory(null);
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Story story)) return false;
-        return Objects.equals(id, story.id) && 
-               Objects.equals(title, story.title) && 
-               Objects.equals(content, story.content) &&
-               isEnding == story.isEnding;
+        if (o == null || getClass() != o.getClass()) return false;
+        Story story = (Story) o;
+        return Objects.equals(id, story.id);
     }
-
+    
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, content, isEnding);
+        return Objects.hash(id);
     }
-
+    
     @Override
     public String toString() {
         return "Story{" +

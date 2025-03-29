@@ -1,4 +1,6 @@
-package tesfaye.venieri.software;
+package tesfaye.venieri.software.DTO;
+
+import tesfaye.venieri.software.Model.Choice;
 
 public class ChoiceDTO {
     private Long id;

@@ -1,7 +1,14 @@
-package tesfaye.venieri.software;
+package tesfaye.venieri.software.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import tesfaye.venieri.software.Model.Choice;
+import tesfaye.venieri.software.Model.Story;
+import tesfaye.venieri.software.DTO.ChoiceDTO;
+import tesfaye.venieri.software.Exception.ResourceNotFoundException;
+import tesfaye.venieri.software.Repository.ChoiceRepository;
+import tesfaye.venieri.software.Repository.StoryRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;

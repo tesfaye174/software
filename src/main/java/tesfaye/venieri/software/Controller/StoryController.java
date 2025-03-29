@@ -1,9 +1,16 @@
-package tesfaye.venieri.software;
+package tesfaye.venieri.software.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import tesfaye.venieri.software.DTO.ChoiceDTO;
+import tesfaye.venieri.software.Exception.ResourceNotFoundException;
+import tesfaye.venieri.software.DTO.StoryDTO;
+import tesfaye.venieri.software.Service.ChoiceService;
+import tesfaye.venieri.software.Service.StoryService;
+
 import org.springframework.validation.annotation.Validated;
 
 import java.util.HashMap;

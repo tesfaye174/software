@@ -1,7 +1,9 @@
-package tesfaye.venieri.software;
+package tesfaye.venieri.software.DTO;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import tesfaye.venieri.software.Model.Story;
 
 public class StoryDTO {
     private Long id;
@@ -57,8 +59,8 @@ public class StoryDTO {
         return isEnding;
     }
     
-    public void setEnding(boolean ending) {
-        isEnding = ending;
+    public void setEnding(boolean isEnding) {
+        this.isEnding = isEnding;
     }
     
     public List<ChoiceDTO> getChoices() {
@@ -67,15 +69,5 @@ public class StoryDTO {
     
     public void setChoices(List<ChoiceDTO> choices) {
         this.choices = choices;
-    }
-    
-    // Metodo per convertire DTO in entità
-    public Story toEntity() {
-        Story story = new Story();
-        story.setId(this.id);
-        story.setTitle(this.title);
-        story.setContent(this.content);
-        story.setEnding(this.isEnding);
-        return story;
     }
 }

@@ -1,4 +1,4 @@
-package tesfaye.venieri.software;
+package tesfaye.venieri.software.Model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -68,20 +68,17 @@ public class User {
         this.email = email;
     }
     
-    // Equals, HashCode e ToString
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) &&
-               Objects.equals(username, user.username) &&
-               Objects.equals(email, user.email);
+        return Objects.equals(id, user.id);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, email);
+        return Objects.hash(id);
     }
     
     @Override

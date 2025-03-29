@@ -1,9 +1,12 @@
-package tesfaye.venieri.software;
+package tesfaye.venieri.software.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import tesfaye.venieri.software.Model.User;
+import tesfaye.venieri.software.Repository.UserRepository;
 
 import java.util.HashMap;
 import java.util.Map;

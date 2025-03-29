@@ -4,6 +4,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import tesfaye.venieri.software.Model.Choice;
+import tesfaye.venieri.software.Model.Story;
+import tesfaye.venieri.software.Model.User;
+import tesfaye.venieri.software.Repository.ChoiceRepository;
+import tesfaye.venieri.software.Repository.StoryRepository;
+import tesfaye.venieri.software.Repository.UserRepository;
+
 @Configuration
 public class DataInitializer {
 

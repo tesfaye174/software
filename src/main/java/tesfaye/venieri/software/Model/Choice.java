@@ -1,4 +1,4 @@
-package tesfaye.venieri.software;
+package tesfaye.venieri.software.Model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

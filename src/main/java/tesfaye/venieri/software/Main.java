@@ -1,10 +1,9 @@
 package tesfaye.venieri.software;
 
 import java.util.List;
+import tesfaye.venieri.software.Model.User;
+import tesfaye.venieri.software.Model.Story;
 
-// This class should be created in the same package as UserManager
-// Typically placed in the same source folder,
-// for example: src/main/java/tesfaye/venieri/software/Main.java
 public class Main {
     public static void main(String[] args) {
         // Get the UserManager instance
@@ -15,15 +14,15 @@ public class Main {
 
         if (loginSuccess) {
             // Get the current logged-in user
-            UserManager.User currentUser = userManager.getCurrentUser();
+            User currentUser = userManager.getCurrentUser();
             System.out.println("Logged in as: " + currentUser.getUsername());
 
             // Create a story
-            UserManager.Story story = userManager.createStory("Adventure", "A thrilling tale...");
+            Story story = userManager.createStory("Adventure", "A thrilling tale...");
             System.out.println("Story created: " + story.getTitle());
 
             // Get user's stories
-            List<UserManager.Story> stories = userManager.getUserStories();
+            List<Story> stories = userManager.getUserStories();
             System.out.println("Total stories by user: " + stories.size());
 
             // Logout

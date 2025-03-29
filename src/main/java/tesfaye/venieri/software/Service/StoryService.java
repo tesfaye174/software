@@ -1,10 +1,20 @@
-package tesfaye.venieri.software;
+package tesfaye.venieri.software.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tesfaye.venieri.software.Model.Choice;
+import tesfaye.venieri.software.Model.Story;
+import tesfaye.venieri.software.DTO.ChoiceDTO;
+import tesfaye.venieri.software.DTO.StoryDTO;
+import tesfaye.venieri.software.Exception.ResourceNotFoundException;
+import tesfaye.venieri.software.Repository.ChoiceRepository;
+import tesfaye.venieri.software.Repository.StoryRepository;
+
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class StoryService {
@@ -102,5 +112,60 @@ public class StoryService {
         }
         
         choiceRepository.delete(choice);
+    }
+    
+    // Metodi di ricerca avanzata utilizzando il repository esteso
+    
+    public List<StoryDTO> findStoriesByTitle(String title) {
+        return storyRepository.findByTitleContainingIgnoreCase(title).stream()
+                .map(StoryDTO::new)
+                .collect(Collectors.toList());
+    }
+    
+    public List<StoryDTO> findStoriesByContent(String content) {
+        return storyRepository.findByContentContainingIgnoreCase(content).stream()
+                .map(StoryDTO::new)
+                .collect(Collectors.toList());
+    }
+    
+    public List<StoryDTO> findStoriesByEnding(boolean isEnding) {
+        return storyRepository.findByIsEnding(isEnding).stream()
+                .map(StoryDTO::new)
+                .collect(Collectors.toList());
+    }
+    
+    public List<StoryDTO> findStoriesByTitleAndEnding(String title, boolean isEnding) {
+        return storyRepository.findByTitleContainingIgnoreCaseAndIsEnding(title, isEnding).stream()
+                .map(StoryDTO::new)
+                .collect(Collectors.toList());
+    }
+    
+    public List<StoryDTO> findStoriesByContentAndEnding(String content, boolean isEnding) {
+        return storyRepository.findByContentContainingIgnoreCaseAndIsEnding(content, isEnding).stream()
+                .map(StoryDTO::new)
+                .collect(Collectors.toList());
+    }
+    
+    public List<StoryDTO> findStoriesWithoutChoices() {
+        return storyRepository.findStoriesWithoutChoices().stream()
+                .map(StoryDTO::new)
+                .collect(Collectors.toList());
+    }
+    
+    public List<StoryDTO> findStoriesWithMinChoices(int minChoices) {
+        return storyRepository.findStoriesWithMinChoices(minChoices).stream()
+                .map(StoryDTO::new)
+                .collect(Collectors.toList());
+    }
+    
+    public List<StoryDTO> findConnectedStories(Long storyId) {
+        // Verifica che la storia esista
+        if (!storyRepository.existsById(storyId)) {
+            throw new ResourceNotFoundException("Story", "id", storyId);
+        }
+        
+        return storyRepository.findConnectedStories(storyId).stream()
+                .map(StoryDTO::new)
+                .collect(Collectors.toList());
     }
 }
