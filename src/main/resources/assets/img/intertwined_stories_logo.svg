@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="100" viewBox="0 0 400 100">
+  <!-- Elemento grafico curvo viola -->
+  <path d="M40,80 Q10,40 40,10" stroke="#9C27B0" stroke-width="3" fill="none" />
+  <!-- Punto all'inizio della curva -->
+  <circle cx="40" cy="10" r="5" fill="#9C27B0" />
+  
+  <!-- Testo "Intertwined Stories" in blu -->
+  <text x="70" y="60" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#5b54fa">
+    Intertwined Stories
+  </text>
+</svg>

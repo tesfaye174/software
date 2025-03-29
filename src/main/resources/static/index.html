@@ -14,19 +14,19 @@
 
     <style>
         :root {
-            /* Revised Color Palette */
-            --primary-bg: #0a0f1f;
-            --secondary-bg: #131a2d;
-            --accent-color: #4f46e5;
-            --accent-hover: #4338ca;
-            --accent-soft: rgba(79, 70, 229, 0.1);
-            --cta-color: #f59e0b;
-            --cta-hover: #d97706;
+            /* Enhanced Color Palette */
+            --primary-bg: #0c1428;
+            --secondary-bg: #1a2540;
+            --accent-color: #5b54fa;
+            --accent-hover: #4a43e8;
+            --accent-soft: rgba(91, 84, 250, 0.15);
+            --cta-color: #ff7e33;
+            --cta-hover: #e86b20;
             --surface-color: #ffffff;
-            --text-primary: #f3f4f6;
-            --text-secondary: #9ca3af;
+            --text-primary: #f8f9fc;
+            --text-secondary: #b0b7c3;
             --text-dark: #1f2937;
-            --border-color: rgba(255, 255, 255, 0.08);
+            --border-color: rgba(255, 255, 255, 0.12);
 
             /* Spacing Variables */
             --space-xs: 0.5rem;
@@ -65,8 +65,8 @@
             background-color: var(--primary-bg);
             overflow-x: hidden;
             background-image:
-                radial-gradient(circle at 15% 50%, rgba(79, 70, 229, 0.05) 0%, transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(245, 158, 11, 0.05) 0%, transparent 25%);
+                radial-gradient(circle at 15% 50%, rgba(91, 84, 250, 0.15) 0%, transparent 30%),
+                radial-gradient(circle at 85% 30%, rgba(255, 126, 51, 0.12) 0%, transparent 30%);
             background-attachment: fixed;
         }
 
@@ -93,9 +93,9 @@
 
         /* Header */
         header {
-            background-color: rgba(10, 15, 31, 0.9);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background-color: rgba(12, 20, 40, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             padding: var(--space-md) var(--space-lg);
             display: flex;
             justify-content: space-between;
@@ -104,6 +104,7 @@
             top: 0;
             z-index: 100;
             border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
         }
 
         .logo-container {
@@ -191,14 +192,14 @@
         }
 
         .hero-card {
-            background: rgba(19, 26, 45, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: rgba(26, 37, 64, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-radius: var(--radius-xl);
             padding: var(--space-xl);
             max-width: 800px;
             width: 100%;
-            box-shadow: var(--shadow-xl);
+            box-shadow: 0 25px 30px -12px rgba(0, 0, 0, 0.25), 0 0 1px rgba(255, 255, 255, 0.2);
             border: 1px solid var(--border-color);
             position: relative;
             z-index: 2;
@@ -598,7 +599,7 @@
 <header>
     <div class="logo-container">
         <a href="index.html" aria-label="Torna alla home page">
-            <img src="assets/img/Stoiesblue.png" alt="Logo Storie Interactive" class="logo">
+            <img src="assets/img/intertwined_stories_logo.svg" alt="Logo Intertwined Stories" class="logo">
         </a>
         <span class="site-title">Intertwined Stories</span>
     </div>
