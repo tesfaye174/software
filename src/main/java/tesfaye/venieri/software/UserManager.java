@@ -4,38 +4,58 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import tesfaye.venieri.software.Model.Story;
 import tesfaye.venieri.software.Model.User;
+import tesfaye.venieri.software.Repository.StoryRepository;
+import tesfaye.venieri.software.Repository.UserRepository;
 
+@Component
 public class UserManager {
-    // Singleton instance
-    private static UserManager instance;
-
     // Current logged-in user
     private User currentUser;
-
-    // List of stories
-    private List<Story> stories;
-
-    // Private constructor for singleton pattern
-    private UserManager() {
-        this.stories = new ArrayList<>();
+    
+    // Repositories
+    private final UserRepository userRepository;
+    private final StoryRepository storyRepository;
+    
+    @Autowired
+    public UserManager(UserRepository userRepository, StoryRepository storyRepository) {
+        this.userRepository = userRepository;
+        this.storyRepository = storyRepository;
+        this.currentUser = null;
     }
-
-    // Singleton getInstance method
+    
+    // For backward compatibility with Main.java
+    private static UserManager instance;
+    
+    // Singleton getInstance method for backward compatibility
     public static synchronized UserManager getInstance() {
         if (instance == null) {
-            instance = new UserManager();
+            // This will only be used when called from Main.java, not from Spring context
+            instance = new UserManager(null, null);
         }
         return instance;
     }
 
     // Login method
     public boolean login(String email, String password) {
-        // In a real application, you'd validate credentials against a database
         if (email != null && !email.isEmpty() && password != null && !password.isEmpty()) {
-            this.currentUser = new User(email, password, email);
-            return true;
+            if (userRepository != null) {
+                // Use repository to find user
+                User user = userRepository.findByUsername(email).orElse(null);
+                if (user != null && user.getPassword().equals(password)) {
+                    this.currentUser = user;
+                    return true;
+                }
+                return false;
+            } else {
+                // Fallback for Main.java when repository is null
+                this.currentUser = new User(email, password, email);
+                return true;
+            }
         }
         return false;
     }
@@ -59,8 +79,13 @@ public class UserManager {
     public Story createStory(String title, String content) {
         if (isLoggedIn()) {
             Story newStory = new Story(title, content, false);
-            stories.add(newStory);
-            return newStory;
+            if (storyRepository != null) {
+                // Use repository to save story
+                return storyRepository.save(newStory);
+            } else {
+                // Fallback for Main.java when repository is null
+                return newStory;
+            }
         }
         return null;
     }
@@ -68,8 +93,13 @@ public class UserManager {
     // Get stories by current user
     public List<Story> getUserStories() {
         if (isLoggedIn()) {
-            // Restituisce tutte le storie poiché la classe Story non ha più il campo author
-            return new ArrayList<>(stories);
+            if (storyRepository != null) {
+                // Use repository to get all stories
+                return storyRepository.findAll();
+            } else {
+                // Fallback for Main.java when repository is null
+                return new ArrayList<>();
+            }
         }
         return new ArrayList<>();
     }
