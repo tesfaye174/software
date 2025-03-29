@@ -146,5 +146,46 @@
         </div>
     </div>
 </div>
+<script src="main.js"></script>
+<script>
+    // Inizializza il gestore utenti quando la pagina si carica
+    document.addEventListener('DOMContentLoaded', function() {
+        UserManager.init();
+        
+        // Gestisce l'invio del form di registrazione
+        const registrationForm = document.getElementById('registration-form');
+        if (registrationForm) {
+            registrationForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+                
+                // Verifica che le password corrispondano
+                if (password !== confirmPassword) {
+                    alert('Le password non corrispondono!');
+                    return;
+                }
+                
+                // Qui andrebbe la logica per registrare l'utente (API call)
+                // Per ora simuliamo una registrazione di successo
+                alert('Registrazione completata con successo!');
+                
+                // Effettua il login automatico dopo la registrazione
+                UserManager.login(email, password, function(error, data) {
+                    if (error) {
+                        alert('Errore durante il login: ' + error.message);
+                        return;
+                    }
+                    
+                    // Reindirizza alla home
+                    window.location.href = 'home.html';
+                });
+            });
+        }
+    });
+</script>
 </body>
 </html>
