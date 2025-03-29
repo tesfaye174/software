@@ -3,68 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crea Una Storia</title>
+    <title>Crea la Tua Storia</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+          --primary-color: #31456A;
+          --accent-color: #DD3838;
+          --bg-color-start: #e0f7fa;
+          --bg-color-end: #F3F3F3;
+          --light-color: #ffffff;
+          --border-color: #ddd;
+          --shadow-color: rgba(0, 0, 0, 0.1);
+        }
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #F3F3F3;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+          font-family: 'Roboto', sans-serif;
+          background: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
+          margin: 0;
+          padding: 20px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 100vh;
+          transition: background 0.3s ease;
         }
         .container {
-            background: #ffffff;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 10px 10px 20px #B9BCC1, -10px -10px 20px #FFFFFF;
-            width: 400px;
-            text-align: center;
+          background: var(--light-color);
+          padding: 40px;
+          border-radius: 15px;
+          box-shadow: 0 6px 15px var(--shadow-color);
+          max-width: 500px;
+          width: 100%;
         }
         h1 {
-            color: #31456A;
-            font-weight: 700;
+          color: var(--primary-color);
+          font-weight: 700;
+          text-align: center;
+          margin-bottom: 25px;
         }
         .form-group {
-            text-align: left;
-            margin-bottom: 15px;
+          margin-bottom: 20px;
         }
         label {
-            font-weight: 400;
-            color: #222222;
+          display: block;
+          margin-bottom: 5px;
+          color: #333;
         }
         input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            margin-top: 5px;
-            border: none;
-            border-radius: 10px;
-            background: #F3F3F3;
-            box-shadow: inset 5px 5px 10px #B9BCC1, inset -5px -5px 10px #FFFFFF;
-            font-size: 14px;
+          width: 100%;
+          padding: 12px;
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          font-size: 14px;
+          transition: border 0.3s ease, box-shadow 0.3s ease;
         }
-        button {
-            width: 100%;
-            padding: 15px;
-            background: #31456A;
-            color: white;
-            font-size: 16px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 5px 5px 10px #B9BCC1, -5px -5px 10px #FFFFFF;
+        input:focus, select:focus, textarea:focus {
+          outline: none;
+          border-color: var(--primary-color);
+          box-shadow: 0 0 5px var(--primary-color);
         }
-        button:hover {
-            background: #222222;
+        .button-group {
+          display: flex;
+          gap: 10px;
+          margin-bottom: 10px;
+        }
+        .button-group button {
+          flex: 1;
+          padding: 15px;
+          border: none;
+          border-radius: 8px;
+          font-size: 16px;
+          cursor: pointer;
+          transition: background 0.3s ease;
+        }
+        .button-group button.submit {
+          background: var(--primary-color);
+          color: var(--light-color);
+        }
+        .button-group button.submit:hover {
+          background: #222;
+        }
+        .button-group button.save {
+          background: var(--accent-color);
+          color: var(--light-color);
+        }
+        .button-group button.save:hover {
+          background: #b32b2b;
+        }
+        .button-group button.load {
+          background: var(--primary-color);
+          color: var(--light-color);
+        }
+        .button-group button.load:hover {
+          background: #222;
         }
         .back-link {
-            display: block;
-            margin-top: 20px;
-            text-decoration: none;
-            color: #31456A;
+          display: block;
+          text-align: center;
+          margin-top: 20px;
+          text-decoration: none;
+          color: var(--primary-color);
+        }
+        .preview {
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          padding: 15px;
+          margin-top: 25px;
+          background: #fafafa;
+          opacity: 0;
+          transform: translateY(20px);
+          transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .preview.visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        .preview h2 {
+          margin-top: 0;
+          color: var(--primary-color);
+        }
+        .char-counter {
+          text-align: right;
+          font-size: 12px;
+          color: #666;
+          margin-top: 5px;
+        }
+        .message {
+          text-align: center;
+          margin-top: 15px;
+          color: var(--primary-color);
+          font-weight: bold;
         }
     </style>
 </head>
@@ -88,19 +155,110 @@
         <div class="form-group">
             <label for="storyDescription">Descrizione</label>
             <textarea id="storyDescription" name="storyDescription" rows="5" required></textarea>
+            <div class="char-counter" id="charCounter">0 caratteri</div>
         </div>
-        <button type="submit">Crea Storia</button>
+        <div class="button-group">
+            <button type="submit" class="submit">Crea Storia</button>
+            <button type="button" class="save" id="saveBtn">Salva Storia</button>
+            <button type="button" class="load" id="loadBtn">Carica Storia</button>
+        </div>
     </form>
+    <div class="preview" id="storyPreview">
+        <h2>Anteprima Storia</h2>
+        <p><strong>Titolo:</strong> <span id="previewTitle"></span></p>
+        <p><strong>Genere:</strong> <span id="previewGenre"></span></p>
+        <p><strong>Descrizione:</strong></p>
+        <p id="previewDescription"></p>
+    </div>
+    <div class="message" id="message"></div>
     <a href="index.html" class="back-link">Torna alla Home</a>
 </div>
 <script>
-    document.getElementById('storyForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const title = document.getElementById('storyTitle').value;
-        const genre = document.getElementById('storyGenre').value;
-        const description = document.getElementById('storyDescription').value;
-        alert(`Storia Creata!\n\nTitolo: ${title}\nGenere: ${genre}\nDescrizione: ${description}`);
-        this.reset();
+    const storyForm = document.getElementById('storyForm');
+    const storyTitle = document.getElementById('storyTitle');
+    const storyGenre = document.getElementById('storyGenre');
+    const storyDescription = document.getElementById('storyDescription');
+    const charCounter = document.getElementById('charCounter');
+    const storyPreview = document.getElementById('storyPreview');
+    const previewTitle = document.getElementById('previewTitle');
+    const previewGenre = document.getElementById('previewGenre');
+    const previewDescription = document.getElementById('previewDescription');
+    const message = document.getElementById('message');
+    const saveBtn = document.getElementById('saveBtn');
+    const loadBtn = document.getElementById('loadBtn');
+
+    // Aggiorna contatore e anteprima in tempo reale
+    function updatePreview() {
+      previewTitle.textContent = storyTitle.value;
+      previewGenre.textContent = storyGenre.options[storyGenre.selectedIndex].text;
+      previewDescription.textContent = storyDescription.value;
+      const count = storyDescription.value.length;
+      charCounter.textContent = count + ' caratteri';
+      if (storyTitle.value || storyDescription.value) {
+        storyPreview.classList.add('visible');
+      } else {
+        storyPreview.classList.remove('visible');
+      }
+    }
+    storyTitle.addEventListener('input', updatePreview);
+    storyGenre.addEventListener('change', updatePreview);
+    storyDescription.addEventListener('input', updatePreview);
+
+    // Gestione del submit
+    storyForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert(`Storia Creata!\n\nTitolo: ${storyTitle.value}\nGenere: ${storyGenre.options[storyGenre.selectedIndex].text}\nDescrizione: ${storyDescription.value}`);
+      storyForm.reset();
+      updatePreview();
+      charCounter.textContent = '0 caratteri';
+      message.textContent = '';
+    });
+
+    // Salva la storia nel localStorage
+    saveBtn.addEventListener('click', function() {
+      if (storyTitle.value.trim() === '' || storyDescription.value.trim() === '') {
+        message.textContent = 'Compila almeno il titolo e la descrizione per salvare.';
+        return;
+      }
+      const storyData = {
+        title: storyTitle.value,
+        genre: storyGenre.options[storyGenre.selectedIndex].text,
+        description: storyDescription.value,
+        timestamp: new Date().toLocaleString()
+      };
+      localStorage.setItem('savedStory', JSON.stringify(storyData));
+      message.textContent = 'Storia salvata con successo!';
+      setTimeout(() => {
+        message.textContent = '';
+      }, 3000);
+    });
+
+    // Carica la storia salvata dal localStorage
+    loadBtn.addEventListener('click', function() {
+      const saved = localStorage.getItem('savedStory');
+      if (saved) {
+        const storyData = JSON.parse(saved);
+        storyTitle.value = storyData.title;
+        // Seleziona l'opzione del genere in base al testo
+        for (let i = 0; i < storyGenre.options.length; i++) {
+          if (storyGenre.options[i].text === storyData.genre) {
+            storyGenre.selectedIndex = i;
+            break;
+          }
+        }
+        storyDescription.value = storyData.description;
+        updatePreview();
+        charCounter.textContent = storyDescription.value.length + ' caratteri';
+        message.textContent = 'Storia caricata!';
+        setTimeout(() => {
+          message.textContent = '';
+        }, 3000);
+      } else {
+        message.textContent = 'Nessuna storia salvata!';
+        setTimeout(() => {
+          message.textContent = '';
+        }, 3000);
+      }
     });
 </script>
 </body>

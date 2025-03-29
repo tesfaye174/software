@@ -6,7 +6,8 @@
     <title>Adventure Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css" rel="stylesheet">
     <style>
         :root {
             --white: #F3F3F3;
@@ -14,8 +15,15 @@
             --bright-red: #DD3838;
             --black: #222222;
             --gray: #CCCCCC;
+            --light-gray: #f0f0f0;
             --green: #4CAF50;
+            --blue: #2196F3;
+            --yellow: #FFC107;
+            --orange: #FF9800;
+            --purple: #9C27B0;
             --transition: all 0.3s ease;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
         }
 
         * {
@@ -31,56 +39,135 @@
             min-height: 100vh;
         }
 
-        /* Sidebar migliorata */
+        /* Sidebar Enhanced */
         .sidebar {
             width: 280px;
             background-color: var(--navy-blue);
             color: white;
-            padding: 25px;
+            padding: 25px 0;
             display: flex;
             flex-direction: column;
             gap: 15px;
             position: relative;
+            transition: var(--transition);
+        }
+
+        .sidebar-header {
+            padding: 0 25px 20px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 10px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-section {
+            margin-bottom: 10px;
+        }
+
+        .menu-section h3 {
+            padding: 0 25px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 8px;
         }
 
         .user-panel {
             margin-top: auto;
-            padding: 15px;
+            padding: 15px 25px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .avatar {
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             background-color: var(--bright-red);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-info span:first-child {
+            font-weight: 500;
+        }
+
+        .user-info span:last-child {
+            font-size: 0.8rem;
+            opacity: 0.8;
         }
 
         .sidebar a {
             color: white;
             text-decoration: none;
-            padding: 12px 15px;
-            border-radius: 6px;
+            padding: 12px 25px;
+            border-radius: 0;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             transition: var(--transition);
+            position: relative;
         }
 
         .sidebar a:hover {
-            background-color: var(--bright-red);
-            transform: translateX(5px);
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
-        /* Main Content migliorato */
+        .sidebar a.active {
+            background-color: var(--bright-red);
+            font-weight: 500;
+        }
+
+        .sidebar a.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background-color: white;
+        }
+
+        .sidebar a i {
+            font-size: 1.2rem;
+        }
+
+        .toggle-sidebar {
+            position: absolute;
+            right: -12px;
+            top: 20px;
+            width: 24px;
+            height: 24px;
+            background-color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            color: var(--navy-blue);
+        }
+
+        /* Main Content Enhanced */
         .main-content {
             flex-grow: 1;
             padding: 30px;
@@ -88,6 +175,8 @@
             flex-direction: column;
             gap: 25px;
             background: #f8f9fa;
+            transition: var(--transition);
+            overflow-y: auto;
         }
 
         .dashboard-header {
@@ -95,32 +184,127 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--navy-blue);
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: 8px;
+            padding: 8px 15px;
+            box-shadow: var(--shadow);
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            background: transparent;
+            padding: 5px;
+            width: 100%;
         }
 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .stat-card {
             background: white;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            box-shadow: var(--shadow);
             transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .stat-card:hover {
             transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-card h3 {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--navy-blue);
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+        }
+
+        .stat-trend.up {
+            color: var(--green);
+        }
+
+        .stat-trend.down {
+            color: var(--bright-red);
+        }
+
+        .row-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 992px) {
+            .row-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .card {
             background: white;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card h2 {
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            color: var(--navy-blue);
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .card h2::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--bright-red);
+            border-radius: 3px;
         }
 
         .button {
@@ -134,14 +318,270 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            font-weight: 500;
         }
 
         .button:hover {
-            background-color: var(--navy-blue);
-            transform: scale(1.05);
+            background-color: #c83232;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(221, 56, 56, 0.3);
         }
 
-        /* Modal Login */
+        .button.secondary {
+            background-color: transparent;
+            color: var(--navy-blue);
+            border: 1px solid var(--navy-blue);
+        }
+
+        .button.secondary:hover {
+            background-color: rgba(49, 69, 106, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(49, 69, 106, 0.1);
+        }
+
+        .auth-prompt {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .auth-prompt p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        /* Adventure card */
+        .adventure-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .adventure-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .adventure-image {
+            height: 180px;
+            background-color: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .adventure-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .adventure-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background-color: var(--green);
+            color: white;
+        }
+
+        .adventure-status.in-progress {
+            background-color: var(--yellow);
+        }
+
+        .adventure-details {
+            padding: 20px;
+        }
+
+        .adventure-title {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--navy-blue);
+        }
+
+        .adventure-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .adventure-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .adventure-progress {
+            width: 100%;
+            height: 8px;
+            background-color: var(--light-gray);
+            border-radius: 4px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--green);
+            border-radius: 4px;
+        }
+
+        .adventure-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* Story playback */
+        .story-container {
+            padding: 20px;
+            border-radius: 12px;
+            background-color: var(--light-gray);
+            margin-bottom: 20px;
+        }
+
+        .story-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            color: var(--navy-blue);
+        }
+
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .choice-button {
+            padding: 12px 20px;
+            background-color: white;
+            color: var(--navy-blue);
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: left;
+            font-weight: normal;
+        }
+
+        .choice-button:hover {
+            background-color: var(--navy-blue);
+            color: white;
+            border-color: var(--navy-blue);
+            transform: translateX(5px);
+        }
+
+        /* Activity Feed */
+        .activity-feed {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.blue { background-color: var(--blue); }
+        .activity-icon.green { background-color: var(--green); }
+        .activity-icon.orange { background-color: var(--orange); }
+        .activity-icon.purple { background-color: var(--purple); }
+
+        .activity-content {
+            flex-grow: 1;
+        }
+
+        .activity-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        /* Badges */
+        .badges-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+        }
+
+        .badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-align: center;
+        }
+
+        .badge-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--navy-blue);
+            font-size: 1.5rem;
+        }
+
+        .badge.unlocked .badge-icon {
+            background-color: var(--navy-blue);
+            color: white;
+        }
+
+        .badge-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .badge.locked {
+            opacity: 0.6;
+        }
+
+        .badge.locked .badge-icon {
+            background-color: var(--gray);
+            color: #888;
+        }
+
+        /* Modal Enhanced */
         .modal {
             display: none;
             position: fixed;
@@ -153,6 +593,13 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            display: flex;
         }
 
         .modal-content {
@@ -161,100 +608,446 @@
             border-radius: 12px;
             width: 400px;
             position: relative;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: var(--navy-blue);
+            font-size: 1.5rem;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #888;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--bright-red);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--navy-blue);
+            box-shadow: 0 0 0 3px rgba(49, 69, 106, 0.1);
+        }
+
+        /* Collapsed sidebar */
+        .sidebar.collapsed {
+            width: 70px;
+        }
+
+        .sidebar.collapsed .sidebar-header h2,
+        .sidebar.collapsed .menu-section h3,
+        .sidebar.collapsed .user-panel .user-info,
+        .sidebar.collapsed a span {
+            display: none;
+        }
+
+        .sidebar.collapsed a {
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .sidebar.collapsed a i {
+            margin: 0;
+        }
+
+        .sidebar.collapsed .user-panel {
+            justify-content: center;
+        }
+
+        .sidebar.collapsed a.active::before {
+            display: none;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: var(--navy-blue);
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateY(150%);
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            z-index: 1000;
+        }
+
+        .notification.success {
+            background-color: var(--green);
+        }
+
+        .notification.error {
+            background-color: var(--bright-red);
+        }
+
+        .notification.show {
+            transform: translateY(0);
+        }
+
+        .notification-close {
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .notification-close:hover {
+            opacity: 1;
+        }
+
+        /* Theme toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: var(--navy-blue);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 100;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(30deg);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                height: 100%;
+                z-index: 100;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-content {
+                width: 100%;
+            }
+
+            .toggle-sidebar {
+                display: flex;
+                right: -40px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-    <h2>Adventure Dashboard</h2>
+<div class="sidebar" id="sidebar">
+    <div class="toggle-sidebar" id="toggleSidebar">
+        <i class="ri-arrow-left-s-line"></i>
+    </div>
 
-    <div data-guest>
+    <div class="sidebar-header">
+        <h2>Adventure Hub</h2>
+    </div>
+
+    <div class="menu-section" data-guest>
+        <h3>Account</h3>
         <a href="#" id="loginTrigger">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-            Accedi
+            <i class="ri-login-box-line"></i>
+            <span>Accedi</span>
         </a>
         <a href="register.html">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
-            Registrati
+            <i class="ri-user-add-line"></i>
+            <span>Registrati</span>
         </a>
     </div>
 
-    <div data-auth style="display: none;">
-        <a href="dashboard.html">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
-            Dashboard
+    <div class="menu-section" data-auth style="display: none;">
+        <h3>Navigazione</h3>
+        <a href="dashboard.html" class="active">
+            <i class="ri-dashboard-line"></i>
+            <span>Dashboard</span>
         </a>
         <a href="story.html">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM8 17.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM9.5 8c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5S9.5 9.38 9.5 8zm6.5 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-            Avventura
+            <i class="ri-book-open-line"></i>
+            <span>Avventura</span>
         </a>
+        <a href="explore.html">
+            <i class="ri-compass-3-line"></i>
+            <span>Esplora</span>
+        </a>
+        <a href="community.html">
+            <i class="ri-group-line"></i>
+            <span>Comunità</span>
+        </a>
+    </div>
+
+    <div class="menu-section" data-auth style="display: none;">
+        <h3>Personale</h3>
         <a href="profile.html">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-            Profilo
+            <i class="ri-user-line"></i>
+            <span>Profilo</span>
+        </a>
+        <a href="settings.html">
+            <i class="ri-settings-4-line"></i>
+            <span>Impostazioni</span>
+        </a>
+        <a href="#" id="logoutTrigger">
+            <i class="ri-logout-box-line"></i>
+            <span>Esci</span>
         </a>
     </div>
 
     <div class="user-panel" data-auth style="display: none;">
-        <div class="avatar" id="userAvatar"></div>
-        <span id="username"></span>
+        <div class="avatar" id="userAvatar">MS</div>
+        <div class="user-info">
+            <span id="username">Mario Rossi</span>
+            <span>Livello 5</span>
+        </div>
     </div>
-    </div>
+</div>
 
-    <div class="main-content">
-        <div class="dashboard-header">
-            <h1>Dashboard Avventura</h1>
-            <button class="button" id="newAdventureBtn" style="display: none;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                Nuova Avventura
-            </button>
+<div class="main-content">
+    <div class="dashboard-header">
+        <h1>La Tua Avventura</h1>
+
+        <div class="search-bar">
+            <i class="ri-search-line"></i>
+            <input type="text" placeholder="Cerca avventure...">
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h3>Avventure Completate</h3>
-                <div class="stat-value" id="completedAdventures">0</div>
+        <button class="button" id="newAdventureBtn">
+            <i class="ri-add-line"></i>
+            <span>Nuova Avventura</span>
+        </button>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Avventure Completate</h3>
+            <div class="stat-value" id="completedAdventures">12</div>
+            <div class="stat-trend up">
+                <i class="ri-arrow-up-line"></i>
+                <span>+3 questa settimana</span>
             </div>
-            <div class="stat-card">
-                <h3>Punti Esperienza</h3>
-                <div class="stat-value" id="xpPoints">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>Punti Esperienza</h3>
+            <div class="stat-value" id="xpPoints">4.578</div>
+            <div class="stat-trend up">
+                <i class="ri-arrow-up-line"></i>
+                <span>+250 questa settimana</span>
             </div>
-            <div class="stat-card">
-                <h3>Amici Online</h3>
-                <div class="stat-value" id="onlineFriends">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>Amici Online</h3>
+            <div class="stat-value" id="onlineFriends">8</div>
+            <div class="stat-trend down">
+                <i class="ri-arrow-down-line"></i>
+                <span>-2 rispetto a ieri</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <h3>Tempo di Gioco</h3>
+            <div class="stat-value">36h</div>
+            <div class="stat-trend up">
+                <i class="ri-arrow-up-line"></i>
+                <span>+4h rispetto a ieri</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-grid">
+        <div class="card">
+            <h2>La Tua Avventura</h2>
+            <div id="adventureContainer" class="story-container">
+                <p id="story-text" class="story-text">Ti trovi in una radura silenziosa, avvolta dalla nebbia mattutina. Davanti a te si ergono tre sentieri: uno che porta verso una fitta foresta, uno che sale ripido verso le montagne, e uno che scende verso una valle illuminata dal sole. Dove desideri andare?</p>
+                <div class="choices-container" id="choices-container">
+                    <button class="choice-button">
+                        Prendere il sentiero verso la foresta
+                    </button>
+                    <button class="choice-button">
+                        Salire verso le montagne
+                    </button>
+                    <button class="choice-button">
+                        Scendere verso la valle soleggiata
+                    </button>
+                </div>
+            </div>
+            <div id="loginPrompt" class="auth-prompt" style="display: none;">
+                <p>Accedi per iniziare la tua avventura!</p>
+                <button class="button" id="loginPromptBtn">
+                    <i class="ri-login-box-line"></i>
+                    <span>Accedi ora</span>
+                </button>
             </div>
         </div>
 
         <div class="card">
-            <h2>La Tua Avventura</h2>
-            <div id="adventureContainer" style="display: none;">
-                <p id="story-text"></p>
-                <div class="buttons" id="choices-container"></div>
-            </div>
-            <div id="loginPrompt" class="auth-prompt">
-                <p>Accedi per iniziare la tua avventura!</p>
-                <button class="button" onclick="userManager.showLoginModal()">Accedi ora</button>
+            <h2>Attività Recenti</h2>
+            <div class="activity-feed">
+                <div class="activity-item">
+                    <div class="activity-icon blue">
+                        <i class="ri-trophy-line"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div>Hai completato l'avventura <strong>Il Tesoro Nascosto</strong></div>
+                        <div class="activity-meta">
+                            <span>250 XP guadagnati</span>
+                            <span>2 ore fa</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon green">
+                        <i class="ri-medal-line"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div>Hai sbloccato il badge <strong>Esploratore Provetto</strong></div>
+                        <div class="activity-meta">
+                            <span>100 XP guadagnati</span>
+                            <span>Ieri</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon orange">
+                        <i class="ri-user-follow-line"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div><strong>Giulia B.</strong> ti ha aggiunto come amico</div>
+                        <div class="activity-meta">
+                            <span>50 XP guadagnati</span>
+                            <span>2 giorni fa</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon purple">
+                        <i class="ri-book-mark-line"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div>Hai iniziato una nuova avventura <strong>Le Caverne dei Misteri</strong></div>
+                        <div class="activity-meta">
+                            <span>25 XP guadagnati</span>
+                            <span>3 giorni fa</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Login -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeModal">&times;</span>
-            <h2>Accedi al tuo account</h2>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label>Email:</label>
-                    <input type="email" id="email" required>
+    <div class="card">
+        <h2>Le Tue Avventure</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 20px;">
+            <!-- Avventura Completata -->
+            <div class="adventure-card">
+                <div class="adventure-image">
+                    <div class="adventure-status">Completata</div>
+                    <img src="/api/placeholder/400/320" alt="Adventure image">
                 </div>
-                <div class="form-group">
-                    <label>Password:</label>
-                    <input type="password" id="password" required>
+                <div class="adventure-details">
+                    <div class="adventure-title">Il Tesoro Perduto</div>
+                    <div class="adventure-description">
+                        Un'avventura emozionante attraverso terre misteriose.
+                    </div>
+                    <div class="adventure-meta">
+                        <span>30m</span>
+                        <span>Completata</span>
+                    </div>
+                    <div class="adventure-progress">
+                        <div class="progress-bar" style="width: 100%;"></div>
+                    </div>
+                    <div class="adventure-actions">
+                        <button class="button secondary">
+                            <i class="ri-eye-line"></i>
+                            <span>Visualizza</span>
+                        </button>
+                        <button class="button">
+                            <i class="ri-restart-line"></i>
+                            <span>Ricomincia</span>
+                        </button>
+                    </div>
                 </div>
-                <button type="submit" class="button">Accedi</button>
-            </form>
+            </div>
+            <!-- Avventura In Corso -->
+            <div class="adventure-card">
+                <div class="adventure-image">
+                    <div class="adventure-status in-progress">In Corso</div>
+                    <img src="/api/placeholder/400/320" alt="Adventure image">
+                </div>
+                <div class="adventure-details">
+                    <div class="adventure-title">La Foresta Incantata</div>
+                    <div class="adventure-description">
+                        Un percorso misterioso tra creature magiche e antichi segreti.
+                    </div>
+                    <div class="adventure-meta">
+                        <span>15m</span>
+                        <span>In Corso</span>
+                    </div>
+                    <div class="adventure-progress">
+                        <div class="progress-bar" style="width: 60%;"></div>
+                    </div>
+                    <div class="adventure-actions">
+                        <button class="button secondary">
+                            <i class="ri-eye-line"></i>
+                            <span>Visualizza</span>
+                        </button>
+                        <button class="button">
+                            <i class="ri-restart-line"></i>
+                            <span>Ricomincia</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <script src="user-manager.js"></script>
-    </body>
+</div>
+</body>
 </html>

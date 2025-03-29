@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css" rel="stylesheet">
     <style>
         :root {
             /* Color Palette */
@@ -19,6 +19,7 @@
             --secondary-color: #DD3838;
             --background-color: #F3F3F3;
             --text-color: #333;
+            --transition-default: all 0.3s ease;
         }
 
         * {
@@ -41,11 +42,12 @@
             background-color: var(--primary-color);
             color: #fff;
             padding: 2rem 1rem;
-            text-align: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
+            z-index: 10;
         }
 
         header h1 {
@@ -59,13 +61,20 @@
 
         .nav-links {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
         }
 
         .nav-links a {
             color: white;
             text-decoration: none;
             font-weight: 500;
+            padding: 0.5rem 0.8rem;
+            border-radius: 6px;
+            transition: var(--transition-default);
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
         /* Main Content */
@@ -76,15 +85,15 @@
             justify-content: center;
             min-height: calc(100vh - 200px);
             text-align: center;
-            padding: 2rem;
+            padding: 3rem 2rem;
             background: linear-gradient(135deg, rgba(49, 69, 106, 0.05), rgba(243, 243, 243, 0.1));
         }
 
         main .card {
             background-color: white;
             border-radius: 12px;
-            padding: 3rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 3.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
             max-width: 800px;
             width: 100%;
         }
@@ -104,7 +113,7 @@
         }
 
         main p {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             color: var(--text-color);
             max-width: 700px;
             margin: 0 auto 2.5rem;
@@ -114,43 +123,47 @@
         .cta-buttons {
             display: flex;
             justify-content: center;
-            gap: 1rem;
+            gap: 1.5rem;
         }
 
         main a.button {
             display: inline-block;
-            padding: 1rem 2rem;
+            padding: 1rem 2.5rem;
             background-color: var(--secondary-color);
             color: #fff;
             text-decoration: none;
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             border-radius: 8px;
-            transition: all 0.3s ease;
+            transition: var(--transition-default);
             font-weight: 500;
+            border: none;
+            cursor: pointer;
         }
 
         main a.button:hover {
-            background-color: var(--primary-color);
+            background-color: #c43030;
             transform: translateY(-3px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 6px 15px rgba(221, 56, 56, 0.3);
         }
 
         .button-secondary {
             display: inline-block;
-            padding: 1rem 2rem;
+            padding: 1rem 2.5rem;
             background-color: transparent;
             color: var(--primary-color);
             text-decoration: none;
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             border-radius: 8px;
             border: 2px solid var(--primary-color);
-            transition: all 0.3s ease;
+            transition: var(--transition-default);
             font-weight: 500;
+            cursor: pointer;
         }
 
         .button-secondary:hover {
-            background-color: var(--primary-color);
-            color: white;
+            background-color: rgba(49, 69, 106, 0.1);
+            border-color: #243751;
+            color: #243751;
         }
 
         /* Login Modal */
@@ -166,29 +179,63 @@
             background-color: rgba(0,0,0,0.5);
             align-items: center;
             justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            display: flex;
         }
 
         .modal-content {
             background-color: white;
-            padding: 2rem;
+            padding: 2.5rem;
             border-radius: 12px;
             width: 100%;
             max-width: 400px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            font-size: 2rem;
         }
 
         .modal-content input {
             width: 100%;
-            padding: 0.75rem;
-            margin-bottom: 1rem;
-            border: 1px solid #ccc;
+            padding: 0.9rem;
+            margin-bottom: 1.2rem;
+            border: 1px solid #ddd;
             border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .modal-content input:focus {
+            outline: none;
+            border-color: var(--primary-color);
         }
 
         .close-modal {
-            float: right;
-            font-size: 1.5rem;
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.75rem;
             cursor: pointer;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--secondary-color);
         }
 
         /* Footer */
@@ -196,7 +243,7 @@
             background-color: var(--primary-color);
             color: #fff;
             text-align: center;
-            padding: 1.5rem 0;
+            padding: 1.7rem 0;
             font-size: 1rem;
         }
 
@@ -217,17 +264,66 @@
             }
         }
 
+        @keyframes slideLeft {
+            from {
+                transform: translateX(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideRight {
+            from {
+                transform: translateX(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
         .fade-in { animation: fadeIn 1s ease; }
         .slide-up { animation: slideUp 1s ease; }
+        .slide-left { animation: slideLeft 1s ease; }
+        .slide-right { animation: slideRight 1s ease; }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            main h2 { font-size: 3rem; }
+            header {
+                flex-direction: column;
+                padding: 1.5rem 1rem;
+            }
+
+            header h1 {
+                margin-bottom: 1rem;
+                font-size: 2rem;
+            }
+
+            main h2 { font-size: 2.8rem; }
             main h3 { font-size: 1.5rem; }
+
             main .card {
                 padding: 2rem;
                 margin: 0 1rem;
             }
+
+            .cta-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            main a.button, .button-secondary {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            main h2 { font-size: 2.4rem; }
+            main p { font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -254,9 +350,8 @@
                 Inizia Avventura
             </a>
             <a href="story.html" class="button-secondary" id="createStoryBtn">
-                    Crea Una Storia
-                </a>
-
+                Crea Una Storia
+            </a>
         </div>
     </div>
 </main>
@@ -271,7 +366,7 @@
             <input type="password" placeholder="Password" required>
             <div class="cta-buttons">
                 <button type="submit" class="button">Accedi</button>
-                <a href="#" class="button-secondary">Registrati</a>
+                <a href="registrazione.html" class="button-secondary">Registrati</a>
             </div>
         </form>
     </div>
@@ -280,6 +375,45 @@
 <footer>
     &copy; 2025 Storie Interattive. Tutti i diritti riservati.
 </footer>
-<script src="user-manager.js"></script>
+
+<script>
+    // Modal functionality
+    const loginTrigger = document.getElementById('loginTrigger');
+    const loginModal = document.getElementById('loginModal');
+    const closeModal = document.getElementById('closeModal');
+
+    loginTrigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        loginModal.classList.add('active');
+    });
+
+    closeModal.addEventListener('click', () => {
+        loginModal.classList.remove('active');
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === loginModal) {
+            loginModal.classList.remove('active');
+        }
+    });
+
+    // Animation delay
+    document.addEventListener('DOMContentLoaded', () => {
+        const card = document.querySelector('.card');
+        card.classList.add('fade-in');
+
+        setTimeout(() => {
+            document.querySelector('.slide-up').style.visibility = 'visible';
+        }, 200);
+
+        setTimeout(() => {
+            document.querySelector('.slide-left').style.visibility = 'visible';
+        }, 400);
+
+        setTimeout(() => {
+            document.querySelector('.slide-right').style.visibility = 'visible';
+        }, 600);
+    });
+</script>
 </body>
 </html>
