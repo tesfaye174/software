@@ -1,7 +1,7 @@
 package tesfaye.venieri.software.Controller;
 
-import .model.User;
-import tesfaye.venieri.software.Service.UtenteService;  // Fixed import path
+import tesfaye.venieri.software.Model.User;
+import tesfaye.venieri.software.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,31 +15,33 @@ import jakarta.validation.Valid;  // Updated to jakarta.validation
 @Controller
 public class AuthController {
 
-    private final UtenteService utenteService;
+    private final UserService userService;
 
     @Autowired
-    public AuthController(UtenteService utenteService) {
-        this.utenteService = utenteService;
+    public AuthController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-        model.addAttribute("utente", new Utente());
+        User newUser = new User();
+        newUser.setIsPremium(false); // Set default premium status
+        model.addAttribute("user", newUser);
         return "register";
     }
 
     @PostMapping("/register")
-    public String registerUser(@Valid @ModelAttribute("utente") Utente utente, BindingResult result, Model model) {
+    public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "register";
         }
 
-        if (utenteService.existsByUsername(utente.getUsername())) {
-            model.addAttribute("usernameError", "Username già in uso");
+        if (userService.existsByUsername(user.getUsername())) {
+            model.addAttribute("usernameError", "Username already in use");
             return "register";
         }
 
-        utenteService.save(utente);
+        userService.save(user);
         return "redirect:/login?registered";
     }
 

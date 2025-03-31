@@ -12,8 +12,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
 @RequestMapping("/scenes")
@@ -138,3 +141,13 @@ public class SceneController {
         return "redirect:/scenes/edit/" + id;
     }
 }
+
+private static final Logger logger = LoggerFactory.getLogger(SceneController.class);
+
+logger.info("Showing creation form for storyId: {}", storyId);
+
+logger.info("Creating scene for storyId: {}", storyId);
+
+logger.info("Showing edit form for sceneId: {}", id);
+
+logger.info("Editing scene with id: {}", id);
