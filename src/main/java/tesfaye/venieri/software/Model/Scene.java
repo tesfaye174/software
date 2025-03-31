@@ -80,3 +80,25 @@ public class Scene {
         items.add(item);
         item.setScene(this);
     }
+
+    public void removeChoice(Choice choice) {
+        choices.remove(choice);
+        choice.setScene(null);
+    }
+
+    public void removeItem(Item item) {
+        items.remove(item);
+        item.setScene(null);
+    }
+
+    // Miglioramento della documentazione
+    /**
+     * Rimuove una scelta dalla scena
+     * @param choice La scelta da rimuovere
+     */
+
+    /**
+     * Rimuove un oggetto dalla scena
+     * @param item L'oggetto da rimuovere
+     */
+}

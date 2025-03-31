@@ -1,9 +1,13 @@
 package tesfaye.venieri.software;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import tesfaye.venieri.software.Model.User;
 import tesfaye.venieri.software.Model.Story;
@@ -11,18 +15,27 @@ import tesfaye.venieri.software.Repository.UserRepository;
 import tesfaye.venieri.software.Repository.StoryRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 @Service
+@Transactional
 public class UserManager {
+    private static final Pattern PASSWORD_PATTERN = 
+        Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$");
     
     private final UserRepository userRepository;
     private final StoryRepository storyRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final SessionRegistry sessionRegistry;
     
     public UserManager(UserRepository userRepository, StoryRepository storyRepository) {
         this.userRepository = userRepository;
         this.storyRepository = storyRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.sessionRegistry = new SessionRegistryImpl();
     }
-    
-    private User currentUser = null;
     
     /**
      * Effettua il login di un utente
@@ -31,40 +44,68 @@ public class UserManager {
      * @return true se il login è avvenuto con successo, false altrimenti
      * @throws IllegalArgumentException se email o password sono null o vuoti
      */
-    public boolean login(String email, String password) {
-        // Validazione input
+    public String login(String email, String password) {
         if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("Email e password non possono essere vuoti");
+            throw new IllegalArgumentException("Email and password cannot be empty");
         }
         
-        // In un'applicazione reale, dovremmo cercare l'utente nel database
-        // e verificare la password in modo sicuro usando BCrypt:
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         Optional<User> userOpt = Optional.ofNullable(findUserByEmail(email));
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            // Verifica della password (in un'app reale dovrebbe essere criptata con BCrypt)
-            if (encoder.matches(password, user.getPassword())) {
-                this.currentUser = user;
-                return true;
-            }
-        } else {
-            // Crea un utente di test per demo
-            User newUser = new User("testUser", encoder.encode(password), email);
-            // Salviamo l'utente nel database
-            userRepository.save(newUser);
-            this.currentUser = newUser;
-            return true;
+        if (!userOpt.isPresent()) {
+            throw new IllegalArgumentException("Invalid email or password");
         }
-        return false;
+        
+        User user = userOpt.get();
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new IllegalArgumentException("Invalid email or password");
+        }
+        
+        String sessionId = generateSessionId();
+        sessionRegistry.registerNewSession(sessionId, user);
+        return sessionId;
+    }
+    
+    private String generateSessionId() {
+        return java.util.UUID.randomUUID().toString();
+    }
+    
+    public User getCurrentUser(String sessionId) {
+        Object principal = sessionRegistry.getSessionInformation(sessionId).getPrincipal();
+        if (principal instanceof User) {
+            return (User) principal;
+        }
+        throw new IllegalStateException("No user logged in for this session");
     }
     
     /**
      * Restituisce l'utente attualmente loggato
      * @return L'utente corrente o null se nessun utente è loggato
      */
-    public User getCurrentUser() {
-        return currentUser;
+    public void validatePassword(String password) {
+        if (password == null || !PASSWORD_PATTERN.matcher(password).matches()) {
+            throw new IllegalArgumentException(
+                "Password must be at least 8 characters long and contain at least one digit, " +
+                "one lowercase letter, one uppercase letter, one special character, and no whitespace");
+        }
+    }
+    
+    @Transactional
+    public User registerUser(String username, String email, String password) {
+        validatePassword(password);
+        
+        if (userRepository.findByEmail(email) != null) {
+            throw new IllegalArgumentException("Email already registered");
+        }
+        
+        if (userRepository.findByUsername(username) != null) {
+            throw new IllegalArgumentException("Username already taken");
+        }
+        
+        User newUser = new User();
+        newUser.setUsername(username);
+        newUser.setEmail(email);
+        newUser.setPassword(passwordEncoder.encode(password));
+        
+        return userRepository.save(newUser);
     }
     
     /**
@@ -93,6 +134,7 @@ public class UserManager {
         Story story = new Story(title, content, isEnding, currentUser);
         // Salviamo la storia nel database
         storyRepository.save(story);
+        logger.info("Creazione di una nuova storia iniziata per l'utente: {}", currentUser.getUsername());
         
         return story;
     }
@@ -138,8 +180,8 @@ public class UserManager {
     /**
      * Effettua il logout dell'utente corrente
      */
-    public void logout() {
-        this.currentUser = null;
+    public void logout(String sessionId) {
+        sessionRegistry.removeSessionInformation(sessionId);
     }
     
     /**
@@ -148,7 +190,43 @@ public class UserManager {
      * @return L'utente trovato o null
      */
     private User findUserByEmail(String email) {
-        // Cerchiamo l'utente nel database
         return userRepository.findByEmail(email);
+    }
+    
+    @Transactional
+    public User updateUserProfile(String sessionId, String username, String email) {
+        User currentUser = getCurrentUser(sessionId);
+        
+        if (username != null && !username.trim().isEmpty()) {
+            User existingUser = userRepository.findByUsername(username);
+            if (existingUser != null && !existingUser.getId().equals(currentUser.getId())) {
+                throw new IllegalArgumentException("Username already taken");
+            }
+            currentUser.setUsername(username);
+        }
+        
+        if (email != null && !email.trim().isEmpty()) {
+            User existingUser = userRepository.findByEmail(email);
+            if (existingUser != null && !existingUser.getId().equals(currentUser.getId())) {
+                throw new IllegalArgumentException("Email already registered");
+            }
+            currentUser.setEmail(email);
+        }
+        
+        return userRepository.save(currentUser);
+    }
+    
+    @Transactional
+    public void changePassword(String sessionId, String oldPassword, String newPassword) {
+        User currentUser = getCurrentUser(sessionId);
+        
+        if (!passwordEncoder.matches(oldPassword, currentUser.getPassword())) {
+            throw new IllegalArgumentException("Current password is incorrect");
+        }
+        
+        validatePassword(newPassword);
+        currentUser.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(currentUser);
+        logger.info("Storia creata con successo: {}", story.getTitle());
     }
 }

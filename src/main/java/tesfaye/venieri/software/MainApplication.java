@@ -1,5 +1,7 @@
 package tesfaye.venieri.software;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -9,11 +11,10 @@ import org.springframework.context.annotation.Bean;
 import java.util.List;
 import tesfaye.venieri.software.Model.User;
 import tesfaye.venieri.software.Model.Story;
-// Remove unused import
-// Removed unused import StoryRepository
 
 @SpringBootApplication
 public class MainApplication {
+    private static final Logger logger = LoggerFactory.getLogger(MainApplication.class);
 
     @Autowired
     private UserManager userManager;
@@ -25,30 +26,56 @@ public class MainApplication {
     @Bean
     public CommandLineRunner runDemo() {
         return args -> {
-            System.out.println("Avvio dell'applicazione demo...");
+            logger.info("Starting demo application...");
             
-            // Login
-            boolean loginSuccess = userManager.login("user@example.com", "password");
-            
-            if (loginSuccess) {
-                // Get the current logged-in user
-                User currentUser = userManager.getCurrentUser();
-                System.out.println("Logged in as: " + currentUser.getUsername());
+            try {
+                // Initialize test user if not exists
+                String testEmail = "user@example.com";
+                String testPassword = "Test@123";
+                String testUsername = "testUser";
                 
-                // Create a story
-                Story story = userManager.createStory("Adventure", "A thrilling tale...", false);
-                System.out.println("Story created: " + story.getTitle());
+                try {
+                    userManager.registerUser(testUsername, testEmail, testPassword);
+                    logger.info("Test user created successfully");
+                } catch (IllegalArgumentException e) {
+                    logger.warn("Test user already exists: {}", e.getMessage());
+                }
                 
-                // Get user's stories
-                List<Story> stories = userManager.getUserStories();
-                System.out.println("Total stories by user: " + stories.size());
+                // Attempt login
+                logger.info("Attempting login with test credentials");
+                String sessionId = userManager.login(testEmail, testPassword);
+                
+                // Get current user
+                User currentUser = userManager.getCurrentUser(sessionId);
+                logger.info("Logged in as: {}", currentUser.getUsername());
+                
+                try {
+                    // Create a story
+                    Story story = new Story();
+                    story.setTitle("Adventure");
+                    story.setDescription("A thrilling tale of coding and debugging...");
+                    story.setAuthor(currentUser);
+                    story.setIsPublic(false);
+                    
+                    Story savedStory = userManager.createStory(story);
+                    logger.info("Story created: {}", savedStory.getTitle());
+                    
+                    // Get user's stories
+                    List<Story> stories = userManager.getUserStories(sessionId);
+                    logger.info("Total stories by user: {}", stories.size());
+                    
+                } catch (Exception e) {
+                    logger.error("Error while managing stories: {}", e.getMessage());
+                }
                 
                 // Logout
-                userManager.logout();
-                System.out.println("User logged out");
-            } else {
-                System.out.println("Login failed");
+                userManager.logout(sessionId);
+                logger.info("User logged out successfully");
+                
+            } catch (Exception e) {
+                logger.error("Demo application error: {}", e.getMessage());
             }
         };
     }
+}
 }

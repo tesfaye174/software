@@ -1,6 +1,6 @@
 package tesfaye.venieri.software.Controller;
 
-import .model.Utente;
+import .model.User;
 import tesfaye.venieri.software.Service.UtenteService;  // Fixed import path
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
