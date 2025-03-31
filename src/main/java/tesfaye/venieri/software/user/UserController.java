@@ -1,4 +1,4 @@
-package tesfaye.venieri.software;
+package tesfaye.venieri.software.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +20,8 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
+
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         // Verifica se username o email sono già in uso
@@ -39,10 +41,10 @@ public class UserController {
         // user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         User savedUser = userRepository.save(user);
-        
+
         // Non restituire la password nella risposta
         savedUser.setPassword(null);
-        
+
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
@@ -55,7 +57,7 @@ public class UserController {
 
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            
+
             // In un'applicazione reale, dovresti verificare la password criptata
             // if (passwordEncoder.matches(password, user.getPassword())) {
             if (password.equals(user.getPassword())) {
@@ -73,7 +75,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         Optional<User> userOpt = userRepository.findById(id);
-        
+
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             user.setPassword(null); // Non restituire la password

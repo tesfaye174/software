@@ -3,6 +3,8 @@ package tesfaye.venieri.software;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import tesfaye.venieri.software.user.User;
+import tesfaye.venieri.software.user.UserRepository;
 
 @Configuration
 public class DataInitializer {

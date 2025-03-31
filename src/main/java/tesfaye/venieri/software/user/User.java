@@ -1,4 +1,4 @@
-package tesfaye.venieri.software;
+package tesfaye.venieri.software.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
