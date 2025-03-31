@@ -39,8 +39,9 @@ public class Riddle {
     private Scene scene;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "destination_scene_id", nullable = false)
-    private Scene destinationScene;
+    @JoinColumn(name = "next_scene_id", nullable = false)
+    @NotNull(message = "La scena di destinazione è obbligatoria")
+    private Scene nextScene;
 
     public boolean checkAnswer(String userAnswer) {
         return answer.equalsIgnoreCase(userAnswer.trim());

@@ -5,32 +5,32 @@ import tesfaye.venieri.software.Model.Choice;
 public class ChoiceDTO {
     private Long id;
     private String text;
-    private Long currentStoryId;
-    private Long nextStoryId;
+    private Long currentSceneId;
+    private Long nextSceneId;
     
-    // Costruttori
+    // Constructors
     public ChoiceDTO() {}
     
-    public ChoiceDTO(Long id, String text, Long currentStoryId, Long nextStoryId) {
+    public ChoiceDTO(Long id, String text, Long currentSceneId, Long nextSceneId) {
         this.id = id;
         this.text = text;
-        this.currentStoryId = currentStoryId;
-        this.nextStoryId = nextStoryId;
+        this.currentSceneId = currentSceneId;
+        this.nextSceneId = nextSceneId;
     }
     
-    // Costruttore da entità
+    // Constructor from entity
     public ChoiceDTO(Choice choice) {
         this.id = choice.getId();
         this.text = choice.getText();
-        if (choice.getCurrentStory() != null) {
-            this.currentStoryId = choice.getCurrentStory().getId();
+        if (choice.getScene() != null) {
+            this.currentSceneId = choice.getScene().getId();
         }
-        if (choice.getNextStory() != null) {
-            this.nextStoryId = choice.getNextStory().getId();
+        if (choice.getNextScene() != null) {
+            this.nextSceneId = choice.getNextScene().getId();
         }
     }
     
-    // Getters e Setters
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -47,19 +47,19 @@ public class ChoiceDTO {
         this.text = text;
     }
     
-    public Long getCurrentStoryId() {
-        return currentStoryId;
+    public Long getCurrentSceneId() {
+        return currentSceneId;
     }
     
-    public void setCurrentStoryId(Long currentStoryId) {
-        this.currentStoryId = currentStoryId;
+    public void setCurrentSceneId(Long currentSceneId) {
+        this.currentSceneId = currentSceneId;
     }
     
-    public Long getNextStoryId() {
-        return nextStoryId;
+    public Long getNextSceneId() {
+        return nextSceneId;
     }
     
-    public void setNextStoryId(Long nextStoryId) {
-        this.nextStoryId = nextStoryId;
+    public void setNextSceneId(Long nextSceneId) {
+        this.nextSceneId = nextSceneId;
     }
 }

@@ -29,10 +29,10 @@ public class GameSessionService extends BaseService {
     
     public void startNewSession(User user, Story story) {
         try {
-            logOperationStart("startNewSession", "Avvio nuova sessione per utente: " + user.getUsername());
+            logOperationStart("startNewSession", "Starting new session for user: " + user.getUsername());
             
             if (activeSessions.containsKey(user.getId())) {
-                throw new GameSessionException("L'utente ha già una sessione attiva");
+                throw new GameSessionException("User already has an active session");
             }
             
             GameState state = new GameState();
@@ -42,56 +42,56 @@ public class GameSessionService extends BaseService {
             state.setProgress(new GameProgress());
             
             activeSessions.put(user.getId(), state);
-            logOperationComplete("startNewSession", "Sessione avviata con successo");
+            logOperationComplete("startNewSession", "Session started successfully");
         } catch (Exception e) {
-            handleException(e, "Errore durante l'avvio della sessione");
+            handleException(e, "Error starting session");
             throw e;
         }
     }
     
     public GameProgress makeChoice(Long userId, Long choiceId) {
         try {
-            logOperationStart("makeChoice", "Elaborazione scelta per utente: " + userId);
+            logOperationStart("makeChoice", "Processing choice for user: " + userId);
             
             GameState state = activeSessions.get(userId);
             if (state == null) {
-                throw new GameSessionException("Nessuna sessione attiva trovata per l'utente");
+                throw new GameSessionException("No active session found for user");
             }
             
             Choice choice = choiceService.findById(choiceId)
-                .orElseThrow(() -> new ResourceNotFoundException("Scelta non trovata con ID: " + choiceId));
+                .orElseThrow(() -> new ResourceNotFoundException("Choice not found with ID: " + choiceId));
             
             if (!state.getCurrentScene().getChoices().contains(choice)) {
-                throw new GameSessionException("Scelta non valida per la scena corrente");
+                throw new GameSessionException("Invalid choice for current scene");
             }
             
-            // Aggiorna lo stato del gioco
+            // Update game state
             state.getProgress().addChoice(choice);
-            state.setCurrentScene(choice.getDestinationScene());
+            state.setCurrentScene(choice.getNextScene());
             
-            // Se la scena è finale, termina la sessione
-            if (state.getCurrentScene().isFinal()) {
+            // If the scene is final, end the session
+            if (state.getCurrentScene().getIsFinal()) {
                 endSession(userId);
             }
             
-            logOperationComplete("makeChoice", "Scelta elaborata con successo");
+            logOperationComplete("makeChoice", "Choice processed successfully");
             return state.getProgress();
         } catch (Exception e) {
-            handleException(e, "Errore durante l'elaborazione della scelta");
+            handleException(e, "Error processing choice");
             throw e;
         }
     }
     
     public void endSession(Long userId) {
         try {
-            logOperationStart("endSession", "Terminazione sessione per utente: " + userId);
+            logOperationStart("endSession", "Ending session for user: " + userId);
             GameState state = activeSessions.remove(userId);
             if (state != null) {
-                // Qui puoi aggiungere la logica per salvare il progresso finale
-                logOperationComplete("endSession", "Sessione terminata con successo");
+                // Here you can add logic to save final progress
+                logOperationComplete("endSession", "Session ended successfully");
             }
         } catch (Exception e) {
-            handleException(e, "Errore durante la terminazione della sessione");
+            handleException(e, "Error ending session");
             throw e;
         }
     }
@@ -99,19 +99,19 @@ public class GameSessionService extends BaseService {
     public GameState getCurrentState(Long userId) {
         GameState state = activeSessions.get(userId);
         if (state == null) {
-            throw new GameSessionException("Nessuna sessione attiva trovata per l'utente");
+            throw new GameSessionException("No active session found for user");
         }
         return state;
     }
     
-    // Classe interna per gestire lo stato del gioco
+    // Inner class for managing game state
     public static class GameState {
         private Scene currentScene;
         private Story story;
         private User user;
         private GameProgress progress;
         
-        // Getters e Setters
+        // Getters and Setters
         public Scene getCurrentScene() { return currentScene; }
         public void setCurrentScene(Scene currentScene) { this.currentScene = currentScene; }
         
@@ -125,7 +125,7 @@ public class GameSessionService extends BaseService {
         public void setProgress(GameProgress progress) { this.progress = progress; }
     }
     
-    // Classe interna per gestire il progresso del gioco
+    // Inner class for managing game progress
     public static class GameProgress {
         private List<Choice> choices = new ArrayList<>();
         private Map<String, Object> gameState = new ConcurrentHashMap<>();

@@ -1,165 +1,234 @@
 package tesfaye.venieri.software.Controller;
 
-import tesfaye.venieri.software.Model.*;
-import tesfaye.venieri.software.Service.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
-import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import tesfaye.venieri.software.Exception.ResourceNotFoundException;
 import tesfaye.venieri.software.Exception.UnauthorizedException;
+import tesfaye.venieri.software.Model.Scene;
+import tesfaye.venieri.software.Model.Story;
+import tesfaye.venieri.software.Model.User;
+import tesfaye.venieri.software.Repository.SceneRepository;
+import tesfaye.venieri.software.Repository.StoryRepository;
+import tesfaye.venieri.software.Repository.UserRepository;
+import tesfaye.venieri.software.Service.SceneService;
 
-@Controller
-@RequestMapping("/scenes")
+import javax.validation.Valid;
+import java.util.List;
+
+/**
+ * Controller per la gestione delle scene.
+ * Gestisce le operazioni CRUD e le funzionalità relative alle scene.
+ */
+@RestController
+@RequestMapping("/api/scenes")
 public class SceneController {
+
     private static final Logger logger = LoggerFactory.getLogger(SceneController.class);
+    
+    private final SceneRepository sceneRepository;
+    private final StoryRepository storyRepository;
+    private final UserRepository userRepository;
     private final SceneService sceneService;
-    private final StoryService storyService;
-    private final ChoiceService choiceService;
-    private final RiddleService riddleService;
-    private final ItemService itemService;
 
     @Autowired
-    public SceneController(SceneService sceneService, StoryService storyService,
-                          ChoiceService choiceService, RiddleService riddleService,
-                          ItemService itemService) {
+    public SceneController(SceneRepository sceneRepository,
+                          StoryRepository storyRepository,
+                          UserRepository userRepository,
+                          SceneService sceneService) {
+        this.sceneRepository = sceneRepository;
+        this.storyRepository = storyRepository;
+        this.userRepository = userRepository;
         this.sceneService = sceneService;
-        this.storyService = storyService;
-        this.choiceService = choiceService;
-        this.riddleService = riddleService;
-        this.itemService = itemService;
     }
 
-    @GetMapping("/create/{storyId}")
-    public String showCreationForm(@PathVariable Long storyId, Model model) {
-        logger.info("Visualizzazione form di creazione scena per la storia ID: {}", storyId);
+    /**
+     * Recupera tutte le scene di una storia
+     * @param storyId ID della storia
+     * @return Lista delle scene della storia
+     */
+    @GetMapping("/story/{storyId}")
+    public ResponseEntity<List<Scene>> getScenesByStory(@PathVariable Long storyId) {
         try {
-            Story story = storyService.findById(storyId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Storia non trovata"));
+            logger.info("Recupero scene della storia: {}", storyId);
+            Story story = storyRepository.findById(storyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Storia non trovata con ID: " + storyId));
             
-            verifyAuthor(story);
-            
-            model.addAttribute("story", story);
-            model.addAttribute("scene", new Scene());
-            return "scenes/create";
+            List<Scene> scenes = sceneRepository.findByStoryId(story.getId());
+            return ResponseEntity.ok(scenes);
         } catch (ResourceNotFoundException e) {
             logger.error("Storia non trovata: {}", storyId);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Storia non trovata");
-        } catch (UnauthorizedException e) {
-            logger.error("Utente non autorizzato: {}", e.getMessage());
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Non sei autorizzato a creare scene per questa storia");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
-            logger.error("Errore durante la visualizzazione del form: {}", e.getMessage());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Errore durante la visualizzazione del form");
+            logger.error("Errore nel recupero delle scene", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @PostMapping("/create/{storyId}")
-    public String createScene(@PathVariable Long storyId, @Valid @ModelAttribute("scene") Scene scene,
-                            BindingResult result, Model model) {
-        logger.info("Creazione nuova scena per la storia ID: {}", storyId);
+    /**
+     * Recupera una scena specifica
+     * @param id ID della scena
+     * @return La scena trovata
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<Scene> getSceneById(@PathVariable Long id) {
         try {
-            Story story = storyService.findById(storyId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Storia non trovata"));
-            
-            verifyAuthor(story);
-            
-            if (result.hasErrors()) {
-                model.addAttribute("story", story);
-                return "scenes/create";
+            logger.info("Recupero scena con ID: {}", id);
+            Scene scene = sceneRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Scena non trovata con ID: " + id));
+            return ResponseEntity.ok(scene);
+        } catch (ResourceNotFoundException e) {
+            logger.error("Scena non trovata: {}", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            logger.error("Errore nel recupero della scena", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Crea una nuova scena
+     * @param scene La scena da creare
+     * @return La scena creata
+     */
+    @PostMapping
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Scene> createScene(@Valid @RequestBody Scene scene) {
+        try {
+            logger.info("Creazione nuova scena");
+            User currentUser = userRepository.findByUsername(
+                SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new UnauthorizedException("Utente non autenticato"));
+
+            // Verifica che l'utente sia l'autore della storia
+            Story story = storyRepository.findById(scene.getStory().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Storia non trovata"));
+
+            if (!story.getAuthor().getId().equals(currentUser.getId())) {
+                throw new UnauthorizedException("Non sei autorizzato a creare scene per questa storia");
             }
+
+            Scene savedScene = sceneRepository.save(scene);
+            logger.info("Scena creata con successo: {}", savedScene.getId());
+            return ResponseEntity.ok(savedScene);
+        } catch (UnauthorizedException e) {
+            logger.error("Utente non autorizzato");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (ResourceNotFoundException e) {
+            logger.error("Storia non trovata");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            logger.error("Errore nella creazione della scena", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Aggiorna una scena esistente
+     * @param id ID della scena da aggiornare
+     * @param sceneDetails Dettagli aggiornati della scena
+     * @return La scena aggiornata
+     */
+    @PutMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Scene> updateScene(@PathVariable Long id, 
+                                           @Valid @RequestBody Scene sceneDetails) {
+        try {
+            logger.info("Aggiornamento scena con ID: {}", id);
+            Scene scene = sceneRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Scena non trovata con ID: " + id));
+
+            // Verifica che l'utente sia l'autore della storia
+            User currentUser = userRepository.findByUsername(
+                SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new UnauthorizedException("Utente non autenticato"));
+
+            if (!scene.getStory().getAuthor().getId().equals(currentUser.getId())) {
+                throw new UnauthorizedException("Non sei autorizzato a modificare questa scena");
+            }
+
+            scene.setTitle(sceneDetails.getTitle());
+            scene.setContent(sceneDetails.getContent());
+            scene.setIsFinal(sceneDetails.getIsFinal());
+
+            Scene updatedScene = sceneRepository.save(scene);
+            logger.info("Scena aggiornata con successo: {}", id);
+            return ResponseEntity.ok(updatedScene);
+        } catch (ResourceNotFoundException e) {
+            logger.error("Scena non trovata per l'aggiornamento: {}", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (UnauthorizedException e) {
+            logger.error("Utente non autorizzato per l'aggiornamento: {}", id);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (Exception e) {
+            logger.error("Errore nell'aggiornamento della scena", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Elimina una scena
+     * @param id ID della scena da eliminare
+     * @return Risposta di conferma
+     */
+    @DeleteMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> deleteScene(@PathVariable Long id) {
+        try {
+            logger.info("Eliminazione scena con ID: {}", id);
+            Scene scene = sceneRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Scena non trovata con ID: " + id));
+
+            // Verifica che l'utente sia l'autore della storia
+            User currentUser = userRepository.findByUsername(
+                SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new UnauthorizedException("Utente non autenticato"));
+
+            if (!scene.getStory().getAuthor().getId().equals(currentUser.getId())) {
+                throw new UnauthorizedException("Non sei autorizzato a eliminare questa scena");
+            }
+
+            sceneRepository.delete(scene);
+            logger.info("Scena eliminata con successo: {}", id);
+            return ResponseEntity.ok().build();
+        } catch (ResourceNotFoundException e) {
+            logger.error("Scena non trovata per l'eliminazione: {}", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (UnauthorizedException e) {
+            logger.error("Utente non autorizzato per l'eliminazione: {}", id);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (Exception e) {
+            logger.error("Errore nell'eliminazione della scena", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Recupera le scene finali di una storia
+     * @param storyId ID della storia
+     * @return Lista delle scene finali
+     */
+    @GetMapping("/story/{storyId}/final")
+    public ResponseEntity<List<Scene>> getFinalScenes(@PathVariable Long storyId) {
+        try {
+            logger.info("Recupero scene finali della storia: {}", storyId);
+            Story story = storyRepository.findById(storyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Storia non trovata con ID: " + storyId));
             
-            scene.setStory(story);
-            Scene savedScene = sceneService.save(scene);
-            return "redirect:/scenes/edit/" + savedScene.getId();
+            List<Scene> finalScenes = sceneRepository.findByStoryIdAndIsFinalTrue(story.getId());
+            return ResponseEntity.ok(finalScenes);
         } catch (ResourceNotFoundException e) {
             logger.error("Storia non trovata: {}", storyId);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Storia non trovata");
-        } catch (UnauthorizedException e) {
-            logger.error("Utente non autorizzato: {}", e.getMessage());
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Non sei autorizzato a creare scene per questa storia");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
-            logger.error("Errore durante la creazione della scena: {}", e.getMessage());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Errore durante la creazione della scena");
-        }
-    }
-
-    @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
-        logger.info("Visualizzazione form di modifica scena ID: {}", id);
-        try {
-            Scene scene = sceneService.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Scena non trovata"));
-            
-            verifyAuthor(scene.getStory());
-            
-            model.addAttribute("scene", scene);
-            model.addAttribute("choices", choiceService.findByScene(scene));
-            model.addAttribute("riddles", riddleService.findByScene(scene));
-            model.addAttribute("items", itemService.findByScene(scene));
-            return "scenes/edit";
-        } catch (ResourceNotFoundException e) {
-            logger.error("Scena non trovata: {}", id);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Scena non trovata");
-        } catch (UnauthorizedException e) {
-            logger.error("Utente non autorizzato: {}", e.getMessage());
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Non sei autorizzato a modificare questa scena");
-        } catch (Exception e) {
-            logger.error("Errore durante la visualizzazione del form: {}", e.getMessage());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Errore durante la visualizzazione del form");
-        }
-    }
-
-    @PostMapping("/edit/{id}")
-    public String editScene(@PathVariable Long id, @Valid @ModelAttribute("scene") Scene scene,
-                          BindingResult result, Model model) {
-        logger.info("Modifica scena ID: {}", id);
-        try {
-            Scene existingScene = sceneService.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Scena non trovata"));
-            
-            verifyAuthor(existingScene.getStory());
-            
-            if (result.hasErrors()) {
-                model.addAttribute("choices", choiceService.findByScene(existingScene));
-                model.addAttribute("riddles", riddleService.findByScene(existingScene));
-                model.addAttribute("items", itemService.findByScene(existingScene));
-                return "scenes/edit";
-            }
-            
-            existingScene.setText(scene.getText());
-            existingScene.setFinal(scene.isFinal());
-            
-            sceneService.save(existingScene);
-            return "redirect:/scenes/edit/" + id;
-        } catch (ResourceNotFoundException e) {
-            logger.error("Scena non trovata: {}", id);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Scena non trovata");
-        } catch (UnauthorizedException e) {
-            logger.error("Utente non autorizzato: {}", e.getMessage());
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Non sei autorizzato a modificare questa scena");
-        } catch (Exception e) {
-            logger.error("Errore durante la modifica della scena: {}", e.getMessage());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Errore durante la modifica della scena");
-        }
-    }
-
-    private void verifyAuthor(Story story) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        if (!story.getAuthor().getUsername().equals(username)) {
-            throw new UnauthorizedException("Non sei autorizzato a modificare questa storia");
+            logger.error("Errore nel recupero delle scene finali", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

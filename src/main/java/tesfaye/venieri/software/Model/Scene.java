@@ -1,175 +1,163 @@
 package tesfaye.venieri.software.Model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Rappresenta una scena nel gioco.
- * Ogni scena contiene testo descrittivo, scelte possibili, enigmi e oggetti.
+ * Rappresenta una scena all'interno di una storia.
+ * Una scena contiene il testo narrativo e le scelte disponibili.
  */
 @Entity
 @Table(name = "scenes")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString(exclude = {"story", "choices", "riddles", "items"})
 public class Scene {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotBlank(message = "Il titolo della scena è obbligatorio")
-    @Column(nullable = false)
+    
+    @NotBlank(message = "Il titolo è obbligatorio")
     private String title;
-
-    @NotBlank(message = "Il contenuto della scena è obbligatorio")
-    @Lob
-    @Column(nullable = false)
+    
+    @NotBlank(message = "Il contenuto è obbligatorio")
+    @Column(columnDefinition = "TEXT")
     private String content;
-
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "story_id", nullable = false)
     @NotNull(message = "La storia è obbligatoria")
     private Story story;
-
+    
     @OneToMany(mappedBy = "scene", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Choice> choices = new HashSet<>();
-
+    private List<Choice> choices = new ArrayList<>();
+    
     @OneToMany(mappedBy = "scene", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Riddle> riddles = new HashSet<>();
-
+    private List<Riddle> riddles = new ArrayList<>();
+    
     @OneToMany(mappedBy = "scene", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Item> items = new HashSet<>();
-
+    private List<Item> items = new ArrayList<>();
+    
     @Column(name = "is_final", nullable = false)
     private boolean isFinal = false;
-
+    
     @ManyToMany
     @JoinTable(
-        name = "scene_connections",
+        name = "scene_previous_scenes",
         joinColumns = @JoinColumn(name = "scene_id"),
         inverseJoinColumns = @JoinColumn(name = "previous_scene_id")
     )
-    private Set<Scene> previousScenes = new HashSet<>();
-
+    private List<Scene> previousScenes = new ArrayList<>();
+    
     @ManyToMany(mappedBy = "previousScenes")
-    private Set<Scene> nextScenes = new HashSet<>();
+    private List<Scene> nextScenes = new ArrayList<>();
 
-    /**
-     * Restituisce le scelte disponibili per il giocatore in base al suo inventario
-     * @param inventory L'inventario del giocatore
-     * @return Set di scelte disponibili
-     */
-    public Set<Choice> getAvailableChoices(Inventory inventory) {
-        Set<Choice> availableChoices = new HashSet<>();
-        for (Choice choice : choices) {
-            if (choice.isAvailable(inventory)) {
-                availableChoices.add(choice);
-            }
-        }
-        return availableChoices;
+    // Getters e Setters
+    public Long getId() {
+        return id;
     }
 
-    /**
-     * Aggiunge una scelta alla scena
-     * @param choice La scelta da aggiungere
-     */
-    public void addChoice(Choice choice) {
-        choices.add(choice);
-        choice.setScene(this);
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    /**
-     * Aggiunge un enigma alla scena
-     * @param riddle L'enigma da aggiungere
-     */
-    public void addRiddle(Riddle riddle) {
-        riddles.add(riddle);
-        riddle.setScene(this);
+    public String getTitle() {
+        return title;
     }
 
-    /**
-     * Aggiunge un oggetto alla scena
-     * @param item L'oggetto da aggiungere
-     */
-    public void addItem(Item item) {
-        items.add(item);
-        item.setScene(this);
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    /**
-     * Rimuove una scelta dalla scena
-     * @param choice La scelta da rimuovere
-     */
-    public void removeChoice(Choice choice) {
-        choices.remove(choice);
-        choice.setScene(null);
+    public String getContent() {
+        return content;
     }
 
-    /**
-     * Rimuove un enigma dalla scena
-     * @param riddle L'enigma da rimuovere
-     */
-    public void removeRiddle(Riddle riddle) {
-        riddles.remove(riddle);
-        riddle.setScene(null);
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    /**
-     * Rimuove un oggetto dalla scena
-     * @param item L'oggetto da rimuovere
-     */
-    public void removeItem(Item item) {
-        items.remove(item);
-        item.setScene(null);
+    public Story getStory() {
+        return story;
     }
 
-    public Set<Scene> getPreviousScenes() {
+    public void setStory(Story story) {
+        this.story = story;
+    }
+
+    public List<Choice> getChoices() {
+        return choices;
+    }
+
+    public void setChoices(List<Choice> choices) {
+        this.choices = choices;
+    }
+
+    public List<Riddle> getRiddles() {
+        return riddles;
+    }
+
+    public void setRiddles(List<Riddle> riddles) {
+        this.riddles = riddles;
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+
+    public boolean getIsFinal() {
+        return isFinal;
+    }
+
+    public void setIsFinal(boolean isFinal) {
+        this.isFinal = isFinal;
+    }
+
+    public List<Scene> getPreviousScenes() {
         return previousScenes;
     }
 
-    public void addPreviousScene(Scene scene) {
-        previousScenes.add(scene);
-        scene.getNextScenes().add(this);
+    public void setPreviousScenes(List<Scene> previousScenes) {
+        this.previousScenes = previousScenes;
     }
 
-    public void removePreviousScene(Scene scene) {
-        previousScenes.remove(scene);
-        scene.getNextScenes().remove(this);
-    }
-
-    public Set<Scene> getNextScenes() {
+    public List<Scene> getNextScenes() {
         return nextScenes;
     }
 
+    public void setNextScenes(List<Scene> nextScenes) {
+        this.nextScenes = nextScenes;
+    }
+
+    // Metodi di utilità per la gestione delle relazioni
+    public void addPreviousScene(Scene scene) {
+        if (!previousScenes.contains(scene)) {
+            previousScenes.add(scene);
+            scene.addNextScene(this);
+        }
+    }
+
+    public void removePreviousScene(Scene scene) {
+        if (previousScenes.remove(scene)) {
+            scene.removeNextScene(this);
+        }
+    }
+
     public void addNextScene(Scene scene) {
-        nextScenes.add(scene);
-        scene.getPreviousScenes().add(this);
+        if (!nextScenes.contains(scene)) {
+            nextScenes.add(scene);
+            scene.addPreviousScene(this);
+        }
     }
 
     public void removeNextScene(Scene scene) {
-        nextScenes.remove(scene);
-        scene.getPreviousScenes().remove(this);
+        if (nextScenes.remove(scene)) {
+            scene.removePreviousScene(this);
+        }
     }
-
-    // Miglioramento della documentazione
-    // Classe che rappresenta una scena nel gioco
-    
-    // Metodo per restituire le scelte disponibili per il giocatore in base al suo inventario
-    // Metodo per aggiungere una scelta alla scena
-    // Metodo per aggiungere un enigma alla scena
-    // Metodo per aggiungere un oggetto alla scena
-    // Metodo per rimuovere una scelta dalla scena
-    // Metodo per rimuovere un enigma dalla scena
-    // Metodo per rimuovere un oggetto dalla scena
 }

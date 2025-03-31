@@ -12,6 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Servizio per la gestione delle storie.
+ * Fornisce metodi per le operazioni CRUD e la logica di business.
+ */
 @Service
 public class StoryService extends BaseService {
 
@@ -22,6 +26,10 @@ public class StoryService extends BaseService {
         this.storyRepository = storyRepository;
     }
 
+    /**
+     * Recupera tutte le storie
+     * @return Lista di tutte le storie
+     */
     @Transactional(readOnly = true)
     public List<Story> findAll() {
         try {
@@ -35,6 +43,11 @@ public class StoryService extends BaseService {
         }
     }
 
+    /**
+     * Recupera una storia per ID
+     * @param id ID della storia
+     * @return Optional contenente la storia se trovata
+     */
     @Transactional(readOnly = true)
     public Optional<Story> findById(Long id) {
         try {
@@ -45,6 +58,41 @@ public class StoryService extends BaseService {
         } catch (Exception e) {
             handleException(e, "Errore durante la ricerca della storia con ID: " + id);
             return Optional.empty();
+        }
+    }
+
+    /**
+     * Recupera le storie di un autore specifico
+     * @param authorId ID dell'autore
+     * @return Lista delle storie dell'autore
+     */
+    @Transactional(readOnly = true)
+    public List<Story> findByAuthorId(Long authorId) {
+        try {
+            logOperationStart("findByAuthorId", "Ricerca storie per autore ID: " + authorId);
+            List<Story> stories = storyRepository.findByAuthorId(authorId);
+            logOperationComplete("findByAuthorId", "Trovate " + stories.size() + " storie");
+            return stories;
+        } catch (Exception e) {
+            handleException(e, "Errore durante la ricerca delle storie per l'autore ID: " + authorId);
+            return List.of();
+        }
+    }
+
+    /**
+     * Recupera le storie pubbliche
+     * @return Lista delle storie pubbliche
+     */
+    @Transactional(readOnly = true)
+    public List<Story> findPublicStories() {
+        try {
+            logOperationStart("findPublicStories", "Ricerca storie pubbliche");
+            List<Story> stories = storyRepository.findByIsPublicTrue();
+            logOperationComplete("findPublicStories", "Trovate " + stories.size() + " storie pubbliche");
+            return stories;
+        } catch (Exception e) {
+            handleException(e, "Errore durante la ricerca delle storie pubbliche");
+            return List.of();
         }
     }
 
@@ -74,6 +122,11 @@ public class StoryService extends BaseService {
         }
     }
 
+    /**
+     * Salva una storia
+     * @param story La storia da salvare
+     * @return La storia salvata
+     */
     @Transactional
     public Story save(Story story) {
         try {
@@ -87,6 +140,10 @@ public class StoryService extends BaseService {
         }
     }
 
+    /**
+     * Elimina una storia
+     * @param story La storia da eliminare
+     */
     @Transactional
     public void delete(Story story) {
         try {

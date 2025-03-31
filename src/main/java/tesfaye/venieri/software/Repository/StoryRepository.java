@@ -6,6 +6,10 @@ import tesfaye.venieri.software.Model.Story;
 
 import java.util.List;
 
+/**
+ * Repository per la gestione delle storie.
+ * Fornisce metodi per l'accesso ai dati delle storie nel database.
+ */
 @Repository
 public interface StoryRepository extends JpaRepository<Story, Long> {
     // Metodo per trovare le storie di un utente specifico
@@ -20,6 +24,16 @@ public interface StoryRepository extends JpaRepository<Story, Long> {
     // Metodo per trovare le storie più popolari
     List<Story> findTopByOrderByViewsDesc(int limit);
     
-    // Metodo per trovare le storie di un autore specifico
+    /**
+     * Recupera tutte le storie di un autore specifico
+     * @param authorId ID dell'autore
+     * @return Lista delle storie dell'autore
+     */
     List<Story> findByAuthorId(Long authorId);
+    
+    /**
+     * Recupera tutte le storie pubbliche
+     * @return Lista delle storie pubbliche
+     */
+    List<Story> findByIsPublicTrue();
 }

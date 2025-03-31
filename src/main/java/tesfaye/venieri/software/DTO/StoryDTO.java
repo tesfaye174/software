@@ -9,28 +9,38 @@ public class StoryDTO {
     private Long id;
     private String title;
     private String content;
-    private boolean isEnding;
+    private String description;
+    private boolean isPremium;
+    private boolean isPublic;
+    private int views;
     private List<ChoiceDTO> choices = new ArrayList<>();
     
-    // Costruttori
+    // Constructors
     public StoryDTO() {}
     
-    public StoryDTO(Long id, String title, String content, boolean isEnding) {
+    public StoryDTO(Long id, String title, String content, String description, 
+                   boolean isPremium, boolean isPublic, int views) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.isEnding = isEnding;
+        this.description = description;
+        this.isPremium = isPremium;
+        this.isPublic = isPublic;
+        this.views = views;
     }
     
-    // Costruttore da entità
+    // Constructor from entity
     public StoryDTO(Story story) {
         this.id = story.getId();
         this.title = story.getTitle();
         this.content = story.getContent();
-        this.isEnding = story.isEnding();
+        this.description = story.getDescription();
+        this.isPremium = story.isPremium();
+        this.isPublic = story.getIsPublic();
+        this.views = story.getViews();
     }
     
-    // Getters e Setters
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -55,12 +65,36 @@ public class StoryDTO {
         this.content = content;
     }
     
-    public boolean isEnding() {
-        return isEnding;
+    public String getDescription() {
+        return description;
     }
     
-    public void setEnding(boolean isEnding) {
-        this.isEnding = isEnding;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
+    public boolean isPremium() {
+        return isPremium;
+    }
+    
+    public void setPremium(boolean isPremium) {
+        this.isPremium = isPremium;
+    }
+    
+    public boolean getIsPublic() {
+        return isPublic;
+    }
+    
+    public void setIsPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+    
+    public int getViews() {
+        return views;
+    }
+    
+    public void setViews(int views) {
+        this.views = views;
     }
     
     public List<ChoiceDTO> getChoices() {

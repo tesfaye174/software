@@ -79,36 +79,12 @@ public class GameService extends BaseService {
     }
 
     @Transactional
-    public Game startNewGame(Long storyId, Long userId) {
-        try {
-            logOperationStart("startNewGame", "Avvio nuovo gioco per la storia: " + storyId + " e utente: " + userId);
-            
-            // Verifica esistenza storia e utente
-            Story story = storyService.findById(storyId)
-                .orElseThrow(() -> new ResourceNotFoundException("Storia non trovata con ID: " + storyId));
-            
-            User user = userService.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Utente non trovato con ID: " + userId));
-
-            // Crea nuovo gioco
-            Game game = new Game();
-            game.setUser(user);
-            game.setStory(story);
-            game.setCurrentScene(story.getFirstScene());
-            game.setStartTime(LocalDateTime.now());
-            game.setStatus(Game.GameStatus.IN_PROGRESS);
-
-            // Crea inventario vuoto
-            game.setInventory(inventoryService.createEmptyInventory(game));
-
-            // Salva il gioco
-            Game savedGame = gameRepository.save(game);
-            logOperationComplete("startNewGame", "Nuovo gioco creato con successo con ID: " + savedGame.getId());
-            return savedGame;
-        } catch (Exception e) {
-            handleException(e, "Errore durante l'avvio del nuovo gioco");
-            throw new GameException("Impossibile avviare il nuovo gioco: " + e.getMessage());
-        }
+    public Game startNewGame(User user, Story story, Scene firstScene) {
+        Game game = new Game();
+        game.setUser(user);
+        game.setStory(story);
+        game.setCurrentScene(firstScene);
+        return gameRepository.save(game);
     }
 
     @Transactional
@@ -230,5 +206,21 @@ public class GameService extends BaseService {
             handleException(e, "Errore durante l'eliminazione del gioco");
             throw new GameException("Impossibile eliminare il gioco: " + e.getMessage());
         }
+    }
+
+    public Game save(Game game) {
+        return gameRepository.save(game);
+    }
+
+    public void saveGameState(Long gameId) {
+        Optional<Game> gameOpt = findById(gameId);
+        if (gameOpt.isPresent()) {
+            Game game = gameOpt.get();
+            gameRepository.save(game);
+        }
+    }
+
+    public void deleteById(Long id) {
+        gameRepository.deleteById(id);
     }
 }

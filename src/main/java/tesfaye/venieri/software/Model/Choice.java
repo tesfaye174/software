@@ -72,6 +72,10 @@ public class Choice {
     @Column(name = "is_correct", nullable = false)
     private boolean isCorrect = false;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_required_id")
+    private Item itemRequired;
+
     /**
      * Costruttore semplificato per creare una scelta base
      * @param text Il testo della scelta
@@ -157,6 +161,14 @@ public class Choice {
 
     public void setItemToGive(Item itemToGive) {
         this.itemToGive = itemToGive;
+    }
+
+    public Item getItemRequired() {
+        return itemRequired;
+    }
+
+    public void setItemRequired(Item itemRequired) {
+        this.itemRequired = itemRequired;
     }
 
     @Override
