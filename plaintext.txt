@@ -1,0 +1,12 @@
+src/
+├── main/
+│   ├── java/
+│   │   └── tesfaye/venieri/software/
+│   │       ├── Controller/      # MVC Controllers
+│   │       ├── Model/           # Domain Entities
+│   │       ├── Service/         # Business Logic
+│   │       ├── Repository/      # Data Access
+│   │       └── Util/           # Helper Classes
+│   └── resources/
+│       └── static/            # GWT client code
+└── test/                      # Unit tests

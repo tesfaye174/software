@@ -18,10 +18,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @Transactional
 public class UserManager {
+    private static final Logger logger = LoggerFactory.getLogger(UserManager.class);
     private static final Pattern PASSWORD_PATTERN = 
         Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$");
     
@@ -30,6 +33,7 @@ public class UserManager {
     private final BCryptPasswordEncoder passwordEncoder;
     private final SessionRegistry sessionRegistry;
     
+    @Autowired
     public UserManager(UserRepository userRepository, StoryRepository storyRepository) {
         this.userRepository = userRepository;
         this.storyRepository = storyRepository;
@@ -69,58 +73,24 @@ public class UserManager {
     }
     
     public User getCurrentUser(String sessionId) {
-        Object principal = sessionRegistry.getSessionInformation(sessionId).getPrincipal();
+        if (sessionId == null) {
+            throw new IllegalArgumentException("Session ID cannot be null");
+        }
+        
+        var sessionInfo = sessionRegistry.getSessionInformation(sessionId);
+        if (sessionInfo == null || sessionInfo.isExpired()) {
+            throw new IllegalStateException("Invalid or expired session");
+        }
+        
+        Object principal = sessionInfo.getPrincipal();
         if (principal instanceof User) {
             return (User) principal;
         }
         throw new IllegalStateException("No user logged in for this session");
     }
-    
-    /**
-     * Restituisce l'utente attualmente loggato
-     * @return L'utente corrente o null se nessun utente è loggato
-     */
-    public void validatePassword(String password) {
-        if (password == null || !PASSWORD_PATTERN.matcher(password).matches()) {
-            throw new IllegalArgumentException(
-                "Password must be at least 8 characters long and contain at least one digit, " +
-                "one lowercase letter, one uppercase letter, one special character, and no whitespace");
-        }
-    }
-    
-    @Transactional
-    public User registerUser(String username, String email, String password) {
-        validatePassword(password);
-        
-        if (userRepository.findByEmail(email) != null) {
-            throw new IllegalArgumentException("Email already registered");
-        }
-        
-        if (userRepository.findByUsername(username) != null) {
-            throw new IllegalArgumentException("Username already taken");
-        }
-        
-        User newUser = new User();
-        newUser.setUsername(username);
-        newUser.setEmail(email);
-        newUser.setPassword(passwordEncoder.encode(password));
-        
-        return userRepository.save(newUser);
-    }
-    
-    /**
-     * Crea una nuova storia per l'utente corrente
-     * @param title Titolo della storia
-     * @param content Contenuto della storia
-     * @param isEnding Indica se la storia è un finale o ha continuazioni
-     * @return La storia creata
-     * @throws IllegalStateException se nessun utente è loggato
-     * @throws IllegalArgumentException se titolo o contenuto sono null o vuoti
-     */
-    public Story createStory(String title, String content, boolean isEnding) {
-        if (currentUser == null) {
-            throw new IllegalStateException("Nessun utente loggato");
-        }
+
+    public Story createStory(String title, String content, boolean isEnding, String sessionId) {
+        User currentUser = getCurrentUser(sessionId);
         
         // Validazione input
         if (title == null || title.trim().isEmpty()) {
@@ -130,13 +100,17 @@ public class UserManager {
             throw new IllegalArgumentException("Il contenuto non può essere vuoto");
         }
         
-        // Creiamo una nuova storia e la associamo all'utente corrente
-        Story story = new Story(title, content, isEnding, currentUser);
-        // Salviamo la storia nel database
-        storyRepository.save(story);
-        logger.info("Creazione di una nuova storia iniziata per l'utente: {}", currentUser.getUsername());
+        Story story = new Story();
+        story.setTitle(title);
+        story.setContent(content);
+        story.setEnding(isEnding);
+        story.setAuthor(currentUser);
+        story.setCreationDate(LocalDateTime.now());
         
-        return story;
+        Story savedStory = storyRepository.save(story);
+        logger.info("Storia creata: {} (autore: {})", title, currentUser.getUsername());
+        
+        return savedStory;
     }
     
     /**
@@ -146,21 +120,21 @@ public class UserManager {
      * @return La storia creata
      * @throws IllegalStateException se nessun utente è loggato
      */
-    public Story createStory(String title, String content) {
-        return createStory(title, content, false);
+    public Story createStory(String title, String content, String sessionId) {
+        return createStory(title, content, false, sessionId);
     }
-    
+
     /**
      * Restituisce tutte le storie dell'utente corrente
      * @return Lista delle storie dell'utente
      * @throws IllegalStateException se nessun utente è loggato
      */
-    public List<Story> getUserStories() {
+    public List<Story> getUserStories(String sessionId) {
+        User currentUser = getCurrentUser(sessionId);
         if (currentUser == null) {
             throw new IllegalStateException("Nessun utente loggato");
         }
         
-        // Recuperiamo le storie dal database filtrate per l'utente corrente
         return storyRepository.findByUserId(currentUser.getId());
     }
     
@@ -227,6 +201,6 @@ public class UserManager {
         validatePassword(newPassword);
         currentUser.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(currentUser);
-        logger.info("Storia creata con successo: {}", story.getTitle());
+        logger.info("Password cambiata con successo per l'utente: {}", currentUser.getUsername());
     }
 }

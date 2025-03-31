@@ -111,3 +111,13 @@ public class StoryService extends BaseService {
         }
     }
 }
+
+
+public interface StoryService {
+    List<Story> searchStories(StorySearchCriteria criteria);
+    
+    @Transactional(readOnly = true)
+    default List<Story> findPopularStories(int limit) {
+        // Implementation using repository
+    }
+}

@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 @Controller
 @RequestMapping("/scenes")
 public class SceneController {
-
+    private static final Logger logger = LoggerFactory.getLogger(SceneController.class);
     private final SceneService sceneService;
     private final StoryService storyService;
     private final ChoiceService choiceService;
@@ -41,6 +41,7 @@ public class SceneController {
 
     @GetMapping("/create/{storyId}")
     public String showCreationForm(@PathVariable Long storyId, Model model) {
+        logger.info("Showing creation form for storyId: {}", storyId);
         Optional<Story> storyOpt = storyService.findById(storyId);
         if (storyOpt.isPresent()) {
             Story story = storyOpt.get();
@@ -62,6 +63,7 @@ public class SceneController {
     @PostMapping("/create/{storyId}")
     public String createScene(@PathVariable Long storyId, @Valid @ModelAttribute("scene") Scene scene, 
                             BindingResult result, Model model) {
+        logger.info("Creating scene for storyId: {}", storyId);
         Optional<Story> storyOpt = storyService.findById(storyId);
         if (!storyOpt.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Story not found");
@@ -88,6 +90,7 @@ public class SceneController {
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
+        logger.info("Showing edit form for sceneId: {}", id);
         Optional<Scene> sceneOpt = sceneService.findById(id);
         if (!sceneOpt.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Scene not found");
@@ -112,6 +115,7 @@ public class SceneController {
     @PostMapping("/edit/{id}")
     public String editScene(@PathVariable Long id, @Valid @ModelAttribute("scene") Scene scene, 
                           BindingResult result, Model model) {
+        logger.info("Editing scene with id: {}", id);
         Optional<Scene> existingSceneOpt = sceneService.findById(id);
         if (!existingSceneOpt.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Scene not found");
@@ -141,13 +145,3 @@ public class SceneController {
         return "redirect:/scenes/edit/" + id;
     }
 }
-
-private static final Logger logger = LoggerFactory.getLogger(SceneController.class);
-
-logger.info("Showing creation form for storyId: {}", storyId);
-
-logger.info("Creating scene for storyId: {}", storyId);
-
-logger.info("Showing edit form for sceneId: {}", id);
-
-logger.info("Editing scene with id: {}", id);

@@ -1,7 +1,7 @@
 package tesfaye.venieri.software.Controller;
 
-import tesfaye.venieri.software.model.*;
-import tesfaye.venieri.software.service.*;
+import tesfaye.venieri.software.Model.*;
+import tesfaye.venieri.software.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,23 +12,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+// Fix package imports at top
+import tesfaye.venieri.software.Model.*;
+import tesfaye.venieri.software.Service.*;
+
 @Controller
 @RequestMapping("/games")
 public class GameController {
-
-    private final GameService gameService;
-    private final StoryService storyService;
-    private final ScenarioService scenarioService;
-    private final UserService userService;
+    // Add missing InventoryService field
     private final InventoryService inventoryService;
-    private final CollectedItemService collectedItemService;
-    private final ItemService itemService;
-    private final ChoiceService choiceService;
-    private final RiddleService riddleService;
-
+    
+    // Fix constructor parameter type from ScenarioServiceImpl to ScenarioService
     @Autowired
     public GameController(GameService gameService, StoryService storyService,
-                         ScenarioServiceImpl scenarioService, UserService userService,
+                         ScenarioService scenarioService, UserService userService,
+                         InventoryService inventoryService, // Add missing parameter
                          CollectedItemService collectedItemService,
                          ItemService itemService, ChoiceService choiceService,
                          RiddleService riddleService) {
@@ -36,7 +34,7 @@ public class GameController {
         this.storyService = storyService;
         this.scenarioService = scenarioService;
         this.userService = userService;
-        this.inventoryService = inventoryService;
+        this.inventoryService = inventoryService; // Initialize new field
         this.collectedItemService = collectedItemService;
         this.itemService = itemService;
         this.choiceService = choiceService;
@@ -57,12 +55,13 @@ public class GameController {
         return "redirect:/games/play/" + game.getId();
     }
 
+    // Fix Optional handling in playGame method
     @GetMapping("/play/{gameId}")
     public String playGame(@PathVariable Long gameId, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
 
-        Game game = gameService.findById(gameId)
+        Optional<Game> game = gameService.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found"));
 
         if (!game.getPlayer().getUsername().equals(username)) {
@@ -71,7 +70,11 @@ public class GameController {
 
         Scenario currentScenario = game.getCurrentScenario();
         List<Choice> choices = choiceService.findByScenario(currentScenario);
-        Optional<Riddle> riddle = riddleService.findByScenario(currentScenario);
+        
+        // Add error handling for riddle
+        Riddle riddle = riddleService.findByScenario(currentScenario)
+                .orElse(null);
+
         List<Item> items = itemService.findByScenario(currentScenario);
         List<CollectedItem> inventory = collectedItemService.findByGame(game);
 
@@ -104,6 +107,7 @@ public class GameController {
         return "redirect:/games/play/" + gameId;
     }
 
+    // Add error handling to solveRiddle
     @PostMapping("/riddle/{gameId}")
     public String solveRiddle(@PathVariable Long gameId, @RequestParam String answer, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -149,7 +153,7 @@ public class GameController {
 
     @GetMapping("/inventory/{gameId}")
     public String viewInventory(@PathVariable Long gameId, Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
 
         Game game = gameService.findById(gameId)

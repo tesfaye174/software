@@ -92,13 +92,11 @@ public class Scene {
     }
 
     // Miglioramento della documentazione
-    /**
-     * Rimuove una scelta dalla scena
-     * @param choice La scelta da rimuovere
-     */
-
-    /**
-     * Rimuove un oggetto dalla scena
-     * @param item L'oggetto da rimuovere
-     */
+    // Classe che rappresenta una scena nel gioco
+    
+    // Metodo per restituire le scelte disponibili per il giocatore in base al suo inventario
+    // Metodo per aggiungere una scelta alla scena
+    // Metodo per aggiungere un oggetto alla scena
+    // Metodo per rimuovere una scelta dalla scena
+    // Metodo per rimuovere un oggetto dalla scena
 }

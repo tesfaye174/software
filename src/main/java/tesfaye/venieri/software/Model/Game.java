@@ -38,4 +38,41 @@ public class Game {
 
     @OneToOne(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Inventory inventory;
+
+    @Column(name = "completed")
+    private boolean completed = false;
+
+    // Miglioramento della documentazione
+    // Classe che rappresenta un gioco
+    /**
+     * Metodo per inizializzare un nuovo gioco
+     * @param story La storia da giocare
+     * @param user Il giocatore
+     * @param startingScene La scena iniziale
+     */
+    public Game(Story story, User user, Scene startingScene) {
+        this.story = story;
+        this.user = user;
+        this.currentScene = startingScene;
+        this.inventory = new Inventory();
+        this.inventory.setGame(this);
+    }
+
+    // Metodo per aggiornare la scena corrente e salvare il progresso
+    /**
+     * Salva il progresso del gioco
+     */
+    public void saveProgress() {
+        this.lastSaveDate = LocalDateTime.now();
+    }
+
+    // Metodo per verificare se il giocatore può accedere a una determinata scelta
+    /**
+     * Verifica se il giocatore può accedere a una determinata scelta
+     * @param choice La scelta da verificare
+     * @return true se il giocatore ha gli oggetti necessari per la scelta
+     */
+    public boolean canMakeChoice(Choice choice) {
+        return choice.isAvailable(this.inventory);
+    }
 }

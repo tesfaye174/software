@@ -47,12 +47,36 @@ public class Choice {
      * @param inventory L'inventario del giocatore
      * @return true se la scelta è disponibile, false altrimenti
      */
+    public Choice(String text, Scene scene, Scene destinationScene) {
+        this.text = text;
+        this.scene = scene;
+        this.destinationScene = destinationScene;
+    }
+
     public boolean isAvailable(Inventory inventory) {
+        if (inventory == null) {
+            throw new IllegalArgumentException("Inventory cannot be null");
+        }
+        
         if (requiredItem == null) {
             return true;
         }
+        
         return inventory.getCollectedItems().stream()
-                .anyMatch(collectedItem -> collectedItem.getItem().equals(requiredItem));
+                .anyMatch(collectedItem -> collectedItem.getItem().getId().equals(requiredItem.getId()));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Choice)) return false;
+        Choice choice = (Choice) o;
+        return getId() != null && getId().equals(choice.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 
     // Constructors, getters and setters are handled by Lombok

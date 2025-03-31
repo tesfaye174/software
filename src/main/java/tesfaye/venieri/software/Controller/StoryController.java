@@ -73,7 +73,7 @@ public class StoryController extends ModelRepositoryController<Story, StoryRepos
     public List<Story> getByAuthor(@PathVariable Long authorId) {
         User author = userRepository.findById(authorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + authorId));
-        return repository.findByAuthor(author);
+        return repository.findByAuthorId(author.getId());
     }
 
     /**

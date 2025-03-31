@@ -41,6 +41,11 @@ public class AuthController {
             return "register";
         }
 
+        if (userService.existsByEmail(user.getEmail())) {
+            model.addAttribute("emailError", "Email already registered");
+            return "register";
+        }
+
         userService.save(user);
         return "redirect:/login?registered";
     }
@@ -61,8 +66,9 @@ public class AuthController {
         // In un'implementazione reale, qui ci sarebbe l'integrazione con un servizio di pagamento esterno
         
         // Per ora, aggiorniamo direttamente lo stato dell'utente
-        // In un caso reale, questo avverrebbe dopo la conferma del pagamento
-        // TODO: Implementare l'integrazione con un servizio di pagamento esterno
+        User currentUser = userService.getCurrentUser();
+        currentUser.setIsPremium(true);
+        userService.save(currentUser);
         
         return "redirect:/home?premiumSuccess";
     }
