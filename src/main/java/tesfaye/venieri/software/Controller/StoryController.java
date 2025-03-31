@@ -1,129 +1,96 @@
 package tesfaye.venieri.software.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import tesfaye.venieri.software.DTO.ChoiceDTO;
 import tesfaye.venieri.software.Exception.ResourceNotFoundException;
-import tesfaye.venieri.software.DTO.StoryDTO;
-import tesfaye.venieri.software.Service.ChoiceService;
-import tesfaye.venieri.software.Service.StoryService;
+import tesfaye.venieri.software.Model.Story;
+import tesfaye.venieri.software.Model.User;
+import tesfaye.venieri.software.Repository.StoryRepository;
+import tesfaye.venieri.software.Repository.UserRepository;
 
-import org.springframework.validation.annotation.Validated;
-
-import java.util.HashMap;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * Controller for managing story operations
+ * Extends the generic ModelRepositoryController for standard CRUD operations
+ */
 @RestController
 @RequestMapping("/api/stories")
-@Validated
-public class StoryController {
-    private final StoryService storyService;
-    private final ChoiceService choiceService;
+public class StoryController extends ModelRepositoryController<Story, StoryRepository> {
+
+    private final UserRepository userRepository;
 
     @Autowired
-    public StoryController(StoryService storyService, ChoiceService choiceService) {
-        this.storyService = storyService;
-        this.choiceService = choiceService;
+    public StoryController(StoryRepository repository, UserRepository userRepository) {
+        this.repository = repository;
+        this.userRepository = userRepository;
     }
 
-    @GetMapping
-    public ResponseEntity<List<StoryDTO>> getAllStories() {
-        List<StoryDTO> stories = storyService.getAllStories();
-        return ResponseEntity.ok(stories);
+    @Override
+    public List<Story> getAll() {
+        return repository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getStoryById(@PathVariable Long id) {
-        try {
-            StoryDTO story = storyService.getStoryById(id);
-            return ResponseEntity.ok(story);
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(createErrorResponse(e.getMessage()));
-        }
+    @Override
+    public ResponseEntity<Story> getById(@PathVariable Long id) {
+        Story story = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Story not found with id: " + id));
+        return ResponseEntity.ok(story);
     }
 
-    @PostMapping
-    public ResponseEntity<StoryDTO> createStory(@RequestBody @Validated StoryDTO storyDTO) {
-        StoryDTO savedStory = storyService.createStory(storyDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedStory);
-    }
-    
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateStory(@PathVariable Long id, @RequestBody @Validated StoryDTO storyDTO) {
-        try {
-            StoryDTO updatedStory = storyService.updateStory(id, storyDTO);
-            return ResponseEntity.ok(updatedStory);
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(createErrorResponse(e.getMessage()));
+    @Override
+    public Story create(@RequestBody Story story) {
+        // Set creation date if not already set
+        if (story.getCreationDate() == null) {
+            story.setCreationDate(LocalDateTime.now());
         }
-    }
-    
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteStory(@PathVariable Long id) {
-        try {
-            storyService.deleteStory(id);
-            return ResponseEntity.noContent().build();
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(createErrorResponse(e.getMessage()));
-        }
-    }
-    
-    @PostMapping("/{storyId}/choices")
-    public ResponseEntity<?> addChoiceToStory(@PathVariable Long storyId, @RequestBody @Validated ChoiceDTO choiceDTO) {
-        try {
-            ChoiceDTO savedChoice = choiceService.addChoiceToStory(storyId, choiceDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedChoice);
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(createErrorResponse(e.getMessage()));
-        }
-    }
-    
-    @GetMapping("/{storyId}/choices")
-    public ResponseEntity<?> getChoicesForStory(@PathVariable Long storyId) {
-        try {
-            List<ChoiceDTO> choices = choiceService.getChoicesForStory(storyId);
-            return ResponseEntity.ok(choices);
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(createErrorResponse(e.getMessage()));
-        }
-    }
-    
-    @PutMapping("/{storyId}/choices/{choiceId}")
-    public ResponseEntity<?> updateChoice(@PathVariable Long storyId, 
-                                        @PathVariable Long choiceId, 
-                                        @RequestBody @Validated ChoiceDTO choiceDTO) {
-        try {
-            ChoiceDTO updatedChoice = choiceService.updateChoice(storyId, choiceId, choiceDTO);
-            return ResponseEntity.ok(updatedChoice);
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(createErrorResponse(e.getMessage()));
-        }
+        return repository.save(story);
     }
 
-    @DeleteMapping("/{storyId}/choices/{choiceId}")
-    public ResponseEntity<?> deleteChoice(@PathVariable Long storyId, @PathVariable Long choiceId) {
-        try {
-            choiceService.deleteChoice(storyId, choiceId);
-            return ResponseEntity.noContent().build();
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(createErrorResponse(e.getMessage()));
-        }
+    @Override
+    public ResponseEntity<Story> update(@PathVariable Long id, @RequestBody Story storyDetails) {
+        Story story = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Story not found with id: " + id));
+
+        story.setTitle(storyDetails.getTitle());
+        story.setDescription(storyDetails.getDescription());
+        // Don't update creation date
+        // Don't update author
+
+        Story updatedStory = repository.save(story);
+        return ResponseEntity.ok(updatedStory);
     }
 
-    private Map<String, String> createErrorResponse(String message) {
-        Map<String, String> response = new HashMap<>();
-        response.put("error", message);
-        return response;
+    /**
+     * Get all stories by a specific author
+     * 
+     * @param authorId The author's ID
+     * @return List of stories by the author
+     */
+    @GetMapping("/author/{authorId}")
+    public List<Story> getByAuthor(@PathVariable Long authorId) {
+        User author = userRepository.findById(authorId)
+                .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + authorId));
+        return repository.findByAuthor(author);
+    }
+
+    /**
+     * Create a new story with the specified author
+     * 
+     * @param authorId The author's ID
+     * @param storia The story to create
+     * @return The created story
+     */
+    @PostMapping("/author/{authorId}")
+    public Story createWithAuthor(@PathVariable Long authorId, @RequestBody Story story) {
+        User author = userRepository.findById(authorId)
+                .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + authorId));
+        
+        story.setAuthor(author);
+        story.setCreationDate(LocalDateTime.now());
+        
+        return repository.save(story);
     }
 }

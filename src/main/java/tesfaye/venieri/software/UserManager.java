@@ -1,123 +1,154 @@
 package tesfaye.venieri.software;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import tesfaye.venieri.software.Model.Story;
 import tesfaye.venieri.software.Model.User;
-import tesfaye.venieri.software.Repository.StoryRepository;
+import tesfaye.venieri.software.Model.Story;
 import tesfaye.venieri.software.Repository.UserRepository;
+import tesfaye.venieri.software.Repository.StoryRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@Component
+@Service
 public class UserManager {
-    // Current logged-in user
-    private User currentUser;
     
-    // Repositories
     private final UserRepository userRepository;
     private final StoryRepository storyRepository;
     
-    @Autowired
     public UserManager(UserRepository userRepository, StoryRepository storyRepository) {
         this.userRepository = userRepository;
         this.storyRepository = storyRepository;
-        this.currentUser = null;
     }
     
-    // For backward compatibility with Main.java
-    private static UserManager instance;
+    private User currentUser = null;
     
-    // Singleton getInstance method for backward compatibility
-    public static synchronized UserManager getInstance() {
-        if (instance == null) {
-            // This will only be used when called from Main.java, not from Spring context
-            instance = new UserManager(null, null);
-        }
-        return instance;
-    }
-
-    // Login method
+    /**
+     * Effettua il login di un utente
+     * @param email Email dell'utente
+     * @param password Password dell'utente
+     * @return true se il login è avvenuto con successo, false altrimenti
+     * @throws IllegalArgumentException se email o password sono null o vuoti
+     */
     public boolean login(String email, String password) {
-        if (email != null && !email.isEmpty() && password != null && !password.isEmpty()) {
-            if (userRepository != null) {
-                // Use repository to find user
-                User user = userRepository.findByUsername(email).orElse(null);
-                if (user != null && user.getPassword().equals(password)) {
-                    this.currentUser = user;
-                    return true;
-                }
-                return false;
-            } else {
-                // Fallback for Main.java when repository is null
-                this.currentUser = new User(email, password, email);
+        // Validazione input
+        if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email e password non possono essere vuoti");
+        }
+        
+        // In un'applicazione reale, dovremmo cercare l'utente nel database
+        // e verificare la password in modo sicuro usando BCrypt:
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        Optional<User> userOpt = Optional.ofNullable(findUserByEmail(email));
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            // Verifica della password (in un'app reale dovrebbe essere criptata con BCrypt)
+            if (encoder.matches(password, user.getPassword())) {
+                this.currentUser = user;
                 return true;
             }
+        } else {
+            // Crea un utente di test per demo
+            User newUser = new User("testUser", encoder.encode(password), email);
+            // Salviamo l'utente nel database
+            userRepository.save(newUser);
+            this.currentUser = newUser;
+            return true;
         }
         return false;
     }
-
-    // Logout method
+    
+    /**
+     * Restituisce l'utente attualmente loggato
+     * @return L'utente corrente o null se nessun utente è loggato
+     */
+    public User getCurrentUser() {
+        return currentUser;
+    }
+    
+    /**
+     * Crea una nuova storia per l'utente corrente
+     * @param title Titolo della storia
+     * @param content Contenuto della storia
+     * @param isEnding Indica se la storia è un finale o ha continuazioni
+     * @return La storia creata
+     * @throws IllegalStateException se nessun utente è loggato
+     * @throws IllegalArgumentException se titolo o contenuto sono null o vuoti
+     */
+    public Story createStory(String title, String content, boolean isEnding) {
+        if (currentUser == null) {
+            throw new IllegalStateException("Nessun utente loggato");
+        }
+        
+        // Validazione input
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("Il titolo non può essere vuoto");
+        }
+        if (content == null || content.trim().isEmpty()) {
+            throw new IllegalArgumentException("Il contenuto non può essere vuoto");
+        }
+        
+        // Creiamo una nuova storia e la associamo all'utente corrente
+        Story story = new Story(title, content, isEnding, currentUser);
+        // Salviamo la storia nel database
+        storyRepository.save(story);
+        
+        return story;
+    }
+    
+    /**
+     * Crea una nuova storia per l'utente corrente (non finale)
+     * @param title Titolo della storia
+     * @param content Contenuto della storia
+     * @return La storia creata
+     * @throws IllegalStateException se nessun utente è loggato
+     */
+    public Story createStory(String title, String content) {
+        return createStory(title, content, false);
+    }
+    
+    /**
+     * Restituisce tutte le storie dell'utente corrente
+     * @return Lista delle storie dell'utente
+     * @throws IllegalStateException se nessun utente è loggato
+     */
+    public List<Story> getUserStories() {
+        if (currentUser == null) {
+            throw new IllegalStateException("Nessun utente loggato");
+        }
+        
+        // Recuperiamo le storie dal database filtrate per l'utente corrente
+        return storyRepository.findByUserId(currentUser.getId());
+    }
+    
+    /**
+     * Cerca storie per titolo
+     * @param title Titolo o parte di titolo da cercare
+     * @return Lista delle storie che contengono il titolo specificato
+     */
+    public List<Story> searchStoriesByTitle(String title) {
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("Il titolo di ricerca non può essere vuoto");
+        }
+        
+        return storyRepository.findByTitleContaining(title);
+    }
+    
+    /**
+     * Effettua il logout dell'utente corrente
+     */
     public void logout() {
         this.currentUser = null;
     }
-
-    // Check if user is logged in
-    public boolean isLoggedIn() {
-        return this.currentUser != null;
-    }
-
-    // Get current logged-in user
-    public User getCurrentUser() {
-        return this.currentUser;
-    }
-
-    // Create a new story
-    public Story createStory(String title, String content) {
-        if (isLoggedIn()) {
-            Story newStory = new Story(title, content, false);
-            if (storyRepository != null) {
-                // Use repository to save story
-                return storyRepository.save(newStory);
-            } else {
-                // Fallback for Main.java when repository is null
-                return newStory;
-            }
-        }
-        return null;
-    }
-
-    // Get stories by current user
-    public List<Story> getUserStories() {
-        if (isLoggedIn()) {
-            if (storyRepository != null) {
-                // Use repository to get all stories
-                return storyRepository.findAll();
-            } else {
-                // Fallback for Main.java when repository is null
-                return new ArrayList<>();
-            }
-        }
-        return new ArrayList<>();
-    }
-
-    // Example usage method
-    public void demonstrateUsage() {
-        // Login
-        boolean loginSuccess = login("user@example.com", "password");
-
-        if (loginSuccess) {
-            // Create a story
-            Story story = createStory("My First Adventure", "A long and exciting story...");
-
-            // Get user's stories
-            List<Story> myStories = getUserStories();
-
-            // Logout
-            logout();
-        }
+    
+    /**
+     * Metodo di supporto per trovare un utente tramite email
+     * @param email Email dell'utente da cercare
+     * @return L'utente trovato o null
+     */
+    private User findUserByEmail(String email) {
+        // Cerchiamo l'utente nel database
+        return userRepository.findByEmail(email);
     }
 }

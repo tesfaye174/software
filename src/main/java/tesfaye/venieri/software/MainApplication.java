@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Bean;
 import java.util.List;
 import tesfaye.venieri.software.Model.User;
 import tesfaye.venieri.software.Model.Story;
-import tesfaye.venieri.software.Repository.UserRepository;
-import tesfaye.venieri.software.Repository.StoryRepository;
+// Remove unused import
+// Removed unused import StoryRepository
 
 @SpringBootApplication
 public class MainApplication {
@@ -36,7 +36,7 @@ public class MainApplication {
                 System.out.println("Logged in as: " + currentUser.getUsername());
                 
                 // Create a story
-                Story story = userManager.createStory("Adventure", "A thrilling tale...");
+                Story story = userManager.createStory("Adventure", "A thrilling tale...", false);
                 System.out.println("Story created: " + story.getTitle());
                 
                 // Get user's stories
