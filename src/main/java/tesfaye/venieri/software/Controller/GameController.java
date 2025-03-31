@@ -1,14 +1,22 @@
 package tesfaye.venieri.software.Controller;
 
-import tesfaye.venieri.software.Model.*;
-import tesfaye.venieri.software.Service.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import tesfaye.venieri.software.Model.*;
+import tesfaye.venieri.software.Service.*;
+import tesfaye.venieri.software.Exception.ResourceNotFoundException;
+import tesfaye.venieri.software.Exception.GameSessionException;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,14 +27,22 @@ import tesfaye.venieri.software.Service.*;
 @Controller
 @RequestMapping("/games")
 public class GameController {
-    // Add missing InventoryService field
-    private final InventoryService inventoryService;
+    private static final Logger logger = LoggerFactory.getLogger(GameController.class);
     
-    // Fix constructor parameter type from ScenarioServiceImpl to ScenarioService
+    private final GameService gameService;
+    private final StoryService storyService;
+    private final ScenarioService scenarioService;
+    private final UserService userService;
+    private final InventoryService inventoryService;
+    private final CollectedItemService collectedItemService;
+    private final ItemService itemService;
+    private final ChoiceService choiceService;
+    private final RiddleService riddleService;
+
     @Autowired
     public GameController(GameService gameService, StoryService storyService,
                          ScenarioService scenarioService, UserService userService,
-                         InventoryService inventoryService, // Add missing parameter
+                         InventoryService inventoryService,
                          CollectedItemService collectedItemService,
                          ItemService itemService, ChoiceService choiceService,
                          RiddleService riddleService) {
@@ -34,7 +50,7 @@ public class GameController {
         this.storyService = storyService;
         this.scenarioService = scenarioService;
         this.userService = userService;
-        this.inventoryService = inventoryService; // Initialize new field
+        this.inventoryService = inventoryService;
         this.collectedItemService = collectedItemService;
         this.itemService = itemService;
         this.choiceService = choiceService;
@@ -43,19 +59,25 @@ public class GameController {
 
     @GetMapping("/start/{storyId}")
     public String startGame(@PathVariable Long storyId, Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        User user = userService.findByUsername(username)
-                .orElseThrow(() -> new IllegalStateException("User not found"));
-
-        Story story = storyService.findById(storyId)
-                .orElseThrow(() -> new IllegalArgumentException("Story not found"));
-
-        Game game = gameService.startNewGame(user, story);
-        return "redirect:/games/play/" + game.getId();
+        logger.info("Avvio nuovo gioco per la storia ID: {}", storyId);
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String username = auth.getName();
+            
+            Game game = gameService.startNewGame(storyId, username);
+            model.addAttribute("game", game);
+            model.addAttribute("currentScene", game.getCurrentScene());
+            model.addAttribute("inventory", game.getInventory());
+            return "games/play";
+        } catch (ResourceNotFoundException e) {
+            logger.error("Storia non trovata: {}", storyId);
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Storia non trovata");
+        } catch (Exception e) {
+            logger.error("Errore durante l'avvio del gioco: {}", e.getMessage());
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR, "Errore durante l'avvio del gioco");
+        }
     }
 
-    // Fix Optional handling in playGame method
     @GetMapping("/play/{gameId}")
     public String playGame(@PathVariable Long gameId, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -89,25 +111,40 @@ public class GameController {
     }
 
     @PostMapping("/choice/{gameId}/{choiceId}")
-    public String makeChoice(@PathVariable Long gameId, @PathVariable Long choiceId) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-
-        Game game = gameService.findById(gameId)
-                .orElseThrow(() -> new IllegalArgumentException("Game not found"));
-
-        if (!game.getPlayer().getUsername().equals(username)) {
-            throw new IllegalStateException("You are not authorized to make this choice");
+    public String makeChoice(@PathVariable Long gameId, @PathVariable Long choiceId, Model model) {
+        logger.info("Elaborazione scelta ID: {} per il gioco ID: {}", choiceId, gameId);
+        try {
+            Game game = gameService.findById(gameId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Gioco non trovato"));
+            
+            Choice choice = choiceService.findById(choiceId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Scelta non trovata"));
+            
+            if (!choice.isAvailable(game.getInventory())) {
+                logger.warn("Scelta non disponibile per il gioco ID: {}", gameId);
+                throw new GameSessionException("Questa scelta non è disponibile");
+            }
+            
+            choice.applyChoice(game.getInventory());
+            game.setCurrentScenario(choice.getDestinationScenario());
+            gameService.saveGame(game);
+            
+            model.addAttribute("game", game);
+            model.addAttribute("currentScene", game.getCurrentScenario());
+            model.addAttribute("inventory", game.getInventory());
+            return "redirect:/games/play/" + gameId;
+        } catch (ResourceNotFoundException e) {
+            logger.error("Risorsa non trovata: {}", e.getMessage());
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (GameSessionException e) {
+            logger.error("Errore nella sessione di gioco: {}", e.getMessage());
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            logger.error("Errore durante l'elaborazione della scelta: {}", e.getMessage());
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR, "Errore durante l'elaborazione della scelta");
         }
-
-        Choice choice = choiceService.findById(choiceId)
-                .orElseThrow(() -> new IllegalArgumentException("Choice not found"));
-
-        gameService.makeChoice(game, choice);
-        return "redirect:/games/play/" + gameId;
     }
 
-    // Add error handling to solveRiddle
     @PostMapping("/riddle/{gameId}")
     public String solveRiddle(@PathVariable Long gameId, @RequestParam String answer, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -153,20 +190,35 @@ public class GameController {
 
     @GetMapping("/inventory/{gameId}")
     public String viewInventory(@PathVariable Long gameId, Model model) {
-        Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-
-        Game game = gameService.findById(gameId)
-                .orElseThrow(() -> new IllegalArgumentException("Game not found"));
-
-        if (!game.getPlayer().getUsername().equals(username)) {
-            throw new IllegalStateException("You are not authorized to view this inventory");
+        logger.info("Visualizzazione inventario per il gioco ID: {}", gameId);
+        try {
+            Game game = gameService.findById(gameId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Gioco non trovato"));
+            
+            model.addAttribute("game", game);
+            model.addAttribute("inventory", game.getInventory());
+            return "games/inventory";
+        } catch (ResourceNotFoundException e) {
+            logger.error("Gioco non trovato: {}", gameId);
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Gioco non trovato");
+        } catch (Exception e) {
+            logger.error("Errore durante la visualizzazione dell'inventario: {}", e.getMessage());
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR, "Errore durante la visualizzazione dell'inventario");
         }
+    }
 
-        List<CollectedItem> inventory = collectedItemService.findByGame(game);
-        model.addAttribute("inventory", inventory);
-        model.addAttribute("game", game);
-
-        return "games/inventory";
+    @PostMapping("/{gameId}/end")
+    public String endGame(@PathVariable Long gameId) {
+        logger.info("Fine del gioco ID: {}", gameId);
+        try {
+            gameService.endGame(gameId);
+            return "redirect:/stories";
+        } catch (ResourceNotFoundException e) {
+            logger.error("Gioco non trovato: {}", gameId);
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Gioco non trovato");
+        } catch (Exception e) {
+            logger.error("Errore durante la fine del gioco: {}", e.getMessage());
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR, "Errore durante la fine del gioco");
+        }
     }
 }

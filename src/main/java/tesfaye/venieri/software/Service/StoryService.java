@@ -2,6 +2,7 @@ package tesfaye.venieri.software.Service;
 
 import tesfaye.venieri.software.Model.Story;
 import tesfaye.venieri.software.Model.User;
+import tesfaye.venieri.software.Model.StorySearchCriteria;
 import tesfaye.venieri.software.Repository.StoryRepository;
 import tesfaye.venieri.software.Exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,14 +111,33 @@ public class StoryService extends BaseService {
             handleException(e, "Errore durante l'eliminazione della storia con ID: " + id);
         }
     }
-}
 
-
-public interface StoryService {
-    List<Story> searchStories(StorySearchCriteria criteria);
-    
     @Transactional(readOnly = true)
-    default List<Story> findPopularStories(int limit) {
-        // Implementation using repository
+    public List<Story> searchStories(StorySearchCriteria criteria) {
+        try {
+            logOperationStart("searchStories", "Ricerca storie con criteri");
+            List<Story> stories = storyRepository.findByTitleContainingAndAuthorId(
+                criteria.getTitle(), 
+                criteria.getAuthorId()
+            );
+            logOperationComplete("searchStories", "Trovate " + stories.size() + " storie");
+            return stories;
+        } catch (Exception e) {
+            handleException(e, "Errore durante la ricerca delle storie con criteri");
+            return List.of();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Story> findPopularStories(int limit) {
+        try {
+            logOperationStart("findPopularStories", "Ricerca storie popolari con limite: " + limit);
+            List<Story> stories = storyRepository.findTopByOrderByViewsDesc(limit);
+            logOperationComplete("findPopularStories", "Trovate " + stories.size() + " storie popolari");
+            return stories;
+        } catch (Exception e) {
+            handleException(e, "Errore durante la ricerca delle storie popolari");
+            return List.of();
+        }
     }
 }

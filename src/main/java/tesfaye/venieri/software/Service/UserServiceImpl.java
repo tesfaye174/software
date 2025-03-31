@@ -1,21 +1,30 @@
 package tesfaye.venieri.software.Service;
 
-import tesfaye.venieri.software.model.User;
-import tesfaye.venieri.software.repository.UserRepository;
+import tesfaye.venieri.software.Model.User;
+import tesfaye.venieri.software.Repository.UserRepository;
 import tesfaye.venieri.software.Exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Optional;
+import java.util.List;
+import java.util.Collections;
+import java.util.regex.Pattern;
 
 @Service
 public class UserServiceImpl extends BaseService implements UserService {
 
+    private static final Pattern PASSWORD_PATTERN = 
+        Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$");
+    
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     @Override
@@ -23,6 +32,8 @@ public class UserServiceImpl extends BaseService implements UserService {
     public User save(User user) {
         try {
             logOperationStart("saveUser", "Salvataggio utente: " + user.getUsername());
+            validatePassword(user.getPassword());
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             User savedUser = userRepository.save(user);
             logOperationComplete("saveUser", "Utente salvato con successo: " + savedUser.getUsername());
             return savedUser;
@@ -37,11 +48,25 @@ public class UserServiceImpl extends BaseService implements UserService {
     public boolean existsByUsername(String username) {
         try {
             logOperationStart("existsByUsername", "Verifica esistenza utente: " + username);
-            boolean exists = userRepository.existsByUsername(username);
+            boolean exists = userRepository.findByUsername(username).isPresent();
             logOperationComplete("existsByUsername", "Risultato verifica: " + exists);
             return exists;
         } catch (Exception e) {
             handleException(e, "Errore durante la verifica dell'esistenza dell'utente: " + username);
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existsByEmail(String email) {
+        try {
+            logOperationStart("existsByEmail", "Verifica esistenza email: " + email);
+            boolean exists = userRepository.findByEmail(email).isPresent();
+            logOperationComplete("existsByEmail", "Risultato verifica: " + exists);
+            return exists;
+        } catch (Exception e) {
+            handleException(e, "Errore durante la verifica dell'esistenza dell'email: " + email);
             return false;
         }
     }
@@ -117,6 +142,48 @@ public class UserServiceImpl extends BaseService implements UserService {
         } catch (Exception e) {
             handleException(e, "Errore durante il recupero di tutti gli utenti");
             return Collections.emptyList();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<User> findByEmail(String email) {
+        try {
+            logOperationStart("findByEmail", "Ricerca utente per email: " + email);
+            Optional<User> user = userRepository.findByEmail(email);
+            logOperationComplete("findByEmail", user.isPresent() ? "Utente trovato" : "Utente non trovato");
+            return user;
+        } catch (Exception e) {
+            handleException(e, "Errore durante la ricerca dell'utente per email: " + email);
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(Long userId, String oldPassword, String newPassword) {
+        try {
+            logOperationStart("changePassword", "Cambio password utente con ID: " + userId);
+            User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Utente non trovato con ID: " + userId));
+
+            if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+                throw new IllegalArgumentException("Password corrente non corretta");
+            }
+
+            validatePassword(newPassword);
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            logOperationComplete("changePassword", "Password cambiata con successo");
+        } catch (Exception e) {
+            handleException(e, "Errore durante il cambio password per l'utente con ID: " + userId);
+            throw e;
+        }
+    }
+
+    private void validatePassword(String password) {
+        if (!PASSWORD_PATTERN.matcher(password).matches()) {
+            throw new IllegalArgumentException("La password deve essere di almeno 8 caratteri e contenere almeno una cifra, una lettera maiuscola, una lettera minuscola e un carattere speciale");
         }
     }
 }

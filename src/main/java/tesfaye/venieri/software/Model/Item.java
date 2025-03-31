@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,21 +21,33 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Size(min = 3, max = 50)
+    @NotBlank(message = "Il nome dell'oggetto è obbligatorio")
+    @Column(nullable = false)
     private String name;
 
-    @Size(max = 200)
-    @Column(length = 200)
+    @Column(length = 500)
     private String description;
+
+    @Column(name = "is_collectible", nullable = false)
+    private boolean isCollectible = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "scene_id", nullable = false)
+    @NotNull(message = "La scena è obbligatoria")
     private Scene scene;
+
+    @Column(name = "is_collected", nullable = false)
+    private boolean isCollected = false;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<CollectedItem> collectedItems = new HashSet<>();
 
     @OneToMany(mappedBy = "requiredItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Choice> conditionedChoices = new HashSet<>();
+
+    public void collect() {
+        if (isCollectible) {
+            this.isCollected = true;
+        }
+    }
 }

@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,26 +28,42 @@ public class Scene {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Il testo della scena non può essere vuoto")
-    @Size(min = 10, max = 5000, message = "Il testo deve essere tra 10 e 5000 caratteri")
-    @Column(length = 5000, nullable = false)
-    private String text;
+    @NotBlank(message = "Il titolo della scena è obbligatorio")
+    @Column(nullable = false)
+    private String title;
+
+    @NotBlank(message = "Il contenuto della scena è obbligatorio")
+    @Lob
+    @Column(nullable = false)
+    private String content;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "story_id", nullable = false)
+    @NotNull(message = "La storia è obbligatoria")
+    private Story story;
+
+    @OneToMany(mappedBy = "scene", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Choice> choices = new HashSet<>();
+
+    @OneToMany(mappedBy = "scene", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Riddle> riddles = new HashSet<>();
+
+    @OneToMany(mappedBy = "scene", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Item> items = new HashSet<>();
 
     @Column(name = "is_final", nullable = false)
     private boolean isFinal = false;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "story_id", nullable = false)
-    private Story story;
+    @ManyToMany
+    @JoinTable(
+        name = "scene_connections",
+        joinColumns = @JoinColumn(name = "scene_id"),
+        inverseJoinColumns = @JoinColumn(name = "previous_scene_id")
+    )
+    private Set<Scene> previousScenes = new HashSet<>();
 
-    @OneToMany(mappedBy = "scene", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private Set<Choice> choices = new HashSet<>();
-
-    @OneToMany(mappedBy = "scene", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private Set<Riddle> riddles = new HashSet<>();
-
-    @OneToMany(mappedBy = "scene", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private Set<Item> items = new HashSet<>();
+    @ManyToMany(mappedBy = "previousScenes")
+    private Set<Scene> nextScenes = new HashSet<>();
 
     /**
      * Restituisce le scelte disponibili per il giocatore in base al suo inventario
@@ -73,6 +90,15 @@ public class Scene {
     }
 
     /**
+     * Aggiunge un enigma alla scena
+     * @param riddle L'enigma da aggiungere
+     */
+    public void addRiddle(Riddle riddle) {
+        riddles.add(riddle);
+        riddle.setScene(this);
+    }
+
+    /**
      * Aggiunge un oggetto alla scena
      * @param item L'oggetto da aggiungere
      */
@@ -81,14 +107,59 @@ public class Scene {
         item.setScene(this);
     }
 
+    /**
+     * Rimuove una scelta dalla scena
+     * @param choice La scelta da rimuovere
+     */
     public void removeChoice(Choice choice) {
         choices.remove(choice);
         choice.setScene(null);
     }
 
+    /**
+     * Rimuove un enigma dalla scena
+     * @param riddle L'enigma da rimuovere
+     */
+    public void removeRiddle(Riddle riddle) {
+        riddles.remove(riddle);
+        riddle.setScene(null);
+    }
+
+    /**
+     * Rimuove un oggetto dalla scena
+     * @param item L'oggetto da rimuovere
+     */
     public void removeItem(Item item) {
         items.remove(item);
         item.setScene(null);
+    }
+
+    public Set<Scene> getPreviousScenes() {
+        return previousScenes;
+    }
+
+    public void addPreviousScene(Scene scene) {
+        previousScenes.add(scene);
+        scene.getNextScenes().add(this);
+    }
+
+    public void removePreviousScene(Scene scene) {
+        previousScenes.remove(scene);
+        scene.getNextScenes().remove(this);
+    }
+
+    public Set<Scene> getNextScenes() {
+        return nextScenes;
+    }
+
+    public void addNextScene(Scene scene) {
+        nextScenes.add(scene);
+        scene.getPreviousScenes().add(this);
+    }
+
+    public void removeNextScene(Scene scene) {
+        nextScenes.remove(scene);
+        scene.getPreviousScenes().remove(this);
     }
 
     // Miglioramento della documentazione
@@ -96,7 +167,9 @@ public class Scene {
     
     // Metodo per restituire le scelte disponibili per il giocatore in base al suo inventario
     // Metodo per aggiungere una scelta alla scena
+    // Metodo per aggiungere un enigma alla scena
     // Metodo per aggiungere un oggetto alla scena
     // Metodo per rimuovere una scelta dalla scena
+    // Metodo per rimuovere un enigma dalla scena
     // Metodo per rimuovere un oggetto dalla scena
 }

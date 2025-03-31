@@ -13,4 +13,13 @@ public interface StoryRepository extends JpaRepository<Story, Long> {
     
     // Metodo per trovare le storie per titolo (utile per ricerche)
     List<Story> findByTitleContaining(String title);
+    
+    // Metodo per trovare le storie per titolo e autore
+    List<Story> findByTitleContainingAndAuthorId(String title, Long authorId);
+    
+    // Metodo per trovare le storie più popolari
+    List<Story> findTopByOrderByViewsDesc(int limit);
+    
+    // Metodo per trovare le storie di un autore specifico
+    List<Story> findByAuthorId(Long authorId);
 }

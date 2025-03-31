@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -19,25 +20,35 @@ public class Riddle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "La domanda dell'enigma è obbligatoria")
     @Size(min = 5, max = 500)
-    @Column(length = 500)
-    private String text;
+    @Column(length = 500, nullable = false)
+    private String question;
 
-    @Enumerated(EnumType.STRING)
-    private RiddleType type;
-
-    @NotBlank
+    @NotBlank(message = "La risposta dell'enigma è obbligatoria")
     @Size(min = 1, max = 100)
-    private String solution;
+    @Column(nullable = false)
+    private String answer;
+
+    @Column(name = "is_solved", nullable = false)
+    private boolean isSolved = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "scene_id", nullable = false)
+    @NotNull(message = "La scena è obbligatoria")
     private Scene scene;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "destination_scene_id", nullable = false)
     private Scene destinationScene;
+
+    public boolean checkAnswer(String userAnswer) {
+        return answer.equalsIgnoreCase(userAnswer.trim());
+    }
+
+    public void solve() {
+        this.isSolved = true;
+    }
 
     public enum RiddleType {
         TEXT,

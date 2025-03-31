@@ -4,7 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -15,9 +16,6 @@ import tesfaye.venieri.software.Repository.UserRepository;
 import tesfaye.venieri.software.Repository.StoryRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,12 +51,11 @@ public class UserManager {
             throw new IllegalArgumentException("Email and password cannot be empty");
         }
         
-        Optional<User> userOpt = Optional.ofNullable(findUserByEmail(email));
-        if (!userOpt.isPresent()) {
+        User user = findUserByEmail(email);
+        if (user == null) {
             throw new IllegalArgumentException("Invalid email or password");
         }
         
-        User user = userOpt.get();
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("Invalid email or password");
         }
@@ -103,9 +100,8 @@ public class UserManager {
         Story story = new Story();
         story.setTitle(title);
         story.setContent(content);
-        story.setEnding(isEnding);
+        story.setPremium(isEnding);
         story.setAuthor(currentUser);
-        story.setCreationDate(LocalDateTime.now());
         
         Story savedStory = storyRepository.save(story);
         logger.info("Storia creata: {} (autore: {})", title, currentUser.getUsername());
@@ -164,7 +160,7 @@ public class UserManager {
      * @return L'utente trovato o null
      */
     private User findUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmail(email).orElse(null);
     }
     
     @Transactional
@@ -172,7 +168,7 @@ public class UserManager {
         User currentUser = getCurrentUser(sessionId);
         
         if (username != null && !username.trim().isEmpty()) {
-            User existingUser = userRepository.findByUsername(username);
+            User existingUser = userRepository.findByUsername(username).orElse(null);
             if (existingUser != null && !existingUser.getId().equals(currentUser.getId())) {
                 throw new IllegalArgumentException("Username already taken");
             }
@@ -180,7 +176,7 @@ public class UserManager {
         }
         
         if (email != null && !email.trim().isEmpty()) {
-            User existingUser = userRepository.findByEmail(email);
+            User existingUser = userRepository.findByEmail(email).orElse(null);
             if (existingUser != null && !existingUser.getId().equals(currentUser.getId())) {
                 throw new IllegalArgumentException("Email already registered");
             }
@@ -202,5 +198,56 @@ public class UserManager {
         currentUser.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(currentUser);
         logger.info("Password cambiata con successo per l'utente: {}", currentUser.getUsername());
+    }
+
+    /**
+     * Registra un nuovo utente nel sistema
+     * @param username Nome utente
+     * @param email Email dell'utente
+     * @param password Password dell'utente
+     * @return L'utente creato
+     * @throws IllegalArgumentException se i parametri non sono validi o se l'email/username è già in uso
+     */
+    @Transactional
+    public User registerUser(String username, String email, String password) {
+        if (username == null || username.trim().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be empty");
+        }
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be empty");
+        }
+        if (password == null || password.trim().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be empty");
+        }
+
+        // Verifica se l'email è già registrata
+        if (userRepository.findByEmail(email) != null) {
+            throw new IllegalArgumentException("Email already registered");
+        }
+
+        // Verifica se lo username è già in uso
+        if (userRepository.findByUsername(username) != null) {
+            throw new IllegalArgumentException("Username already taken");
+        }
+
+        // Validazione password
+        validatePassword(password);
+
+        // Crea il nuovo utente
+        User user = new User();
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setPremium(false);
+
+        User savedUser = userRepository.save(user);
+        logger.info("Utente registrato con successo: {}", username);
+        return savedUser;
+    }
+
+    private void validatePassword(String password) {
+        if (!PASSWORD_PATTERN.matcher(password).matches()) {
+            throw new IllegalArgumentException("Password must be at least 8 characters long and contain at least one digit, one uppercase letter, one lowercase letter, and one special character");
+        }
     }
 }
