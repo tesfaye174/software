@@ -15,6 +15,8 @@ public class DataInitializer {
             // Crea un utente di esempio
             User user = new User("admin", "password", "admin@example.com");
             userRepository.save(user);
+
+            userRepository.save(new User("tesfaye", "broken", "tesfaye@gmail.com"));
             
             // Crea alcune storie di esempio
             Story story1 = new Story(

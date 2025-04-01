@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrazione</title>
-    <link rel="stylesheet" href="assets/assets/css/modern.css">
+    <link rel="stylesheet" href="modern.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -181,14 +181,14 @@
             <label for="conferma-password">Conferma Password:</label>
             <input type="password" id="conferma-password" placeholder="Conferma la tua password" required>
 
-            <button type="button" onclick="registrazione()" class="pulse">Registrati</button>
+            <button type="submit" onclick="registrazione()" class="pulse">Registrati</button>
         </form>
         <p class="fade-in">Hai già un account? <a href="login.html">Accedi qui</a></p>
         <p class="fade-in"><a href="index.html">Torna alla home</a></p>
     </section>
 </div>
 
-<script src="assets/assets/js/main.js"></script>
+<script src="main.js"></script>
 <script>
     // Funzione di registrazione
     function validateEmail(email) {
@@ -210,7 +210,7 @@
     function registrazione() {
         const nomeUtente = document.getElementById('nome-utente').value;
         const email = document.getElementById('email').value;
-        const password = document.getElementById('password-registrazione').value;
+        const givenPassword = document.getElementById('password-registrazione').value;
         const confermaPassword = document.getElementById('conferma-password').value;
 
         if (!validateEmail(email)) {
@@ -231,12 +231,34 @@
             document.getElementById('conferma-password').classList.remove('error');
         }
 
-        UserManager.register(nomeUtente, password, email, (error, data) => {
-            if (error) {
-                alert("Errore durante la registrazione: " + (error.message || "Errore sconosciuto"));
-                return;
-            }
-            alert("Registrazione completata con successo!");
+        //
+
+        document.getElementById('form-registrazione').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = {
+                username: nomeUtente,
+                email: email,
+                password: givenPassword
+            };
+
+            fetch('http://localhost:8080/api/users/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Registration successful!');
+                console.log(data);
+            })
+            .catch(error => {
+                alert('Registration failed!');
+                console.error('Error:', error);
+            });
+        });
             UserManager.login(nomeUtente, password, (loginError, loginData) => {
                 if (loginError) {
                     alert("Registrazione completata, ma errore durante il login automatico. Prova ad accedere manualmente.");
