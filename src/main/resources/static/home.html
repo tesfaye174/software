@@ -1,40 +1,46 @@
 <!DOCTYPE html>
 <html lang="it">
-<header>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Storie Intrecciate - Avventura</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storie Intrecciate - Avventura</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
 <body>
+
 <header>
     <nav class="nav-container">
         <a href="index.html" class="logo">
-            <img src="imag/Stoiesb.png" height="71" width="562"/>
+            <img src="img/Stoiesb.png" alt="Logo Storie Intrecciate" height="71" width="562"/>
         </a>
     </nav>
 </header>
 
-<div class="user-info">
-    <div id="userInfo" class="fade-in">Benvenuto, utente!</div>
-    <div class="auth-buttons">
-        <a href="login.html" id="loginBtn" class="slide-left">Accedi</a>
-        <a href="registrazione.html" id="registerBtn" class="slide-left">Registrati</a>
-        <button id="logoutBtn" class="slide-left">Esci</button>
+<main>
+    <div class="user-info">
+        <div id="userInfo" class="fade-in">Benvenuto, utente!</div>
+        <div class="auth-buttons">
+            <a href="login.html" id="loginBtn" class="slide-left">Accedi</a>
+            <a href="registrazione.html" id="registerBtn" class="slide-left">Registrati</a>
+            <button id="logoutBtn" class="slide-left" onclick="logout()">Esci</button>
+        </div>
     </div>
-</div>
 
-<div class="container card slide-up">
-  <h1 class="pulse">Benvenuto nel Gioco Interattivo!</h1>
-  <p class="story-text fade-in" id="story-text">Sei un eroe in cerca di avventure. Inizia la tua storia scegliendo un percorso:</p>
+    <div class="container card slide-up">
+        <h1 class="pulse">Benvenuto nel Gioco Interattivo!</h1>
+        <p class="story-text fade-in" id="story-text">
+            Sei un eroe in cerca di avventure. Inizia la tua storia scegliendo un percorso:
+        </p>
 
-  <div class="choices" id="choices-container">
-    <button class="choice-button slide-right" onclick="goToNextStage('fase1')">Inizia il viaggio</button>
-    <button class="choice-button slide-right" onclick="goToNextStage('fase2')">Prendi una pausa</button>
-  </div>
-</div>
+        <div class="choices" id="choices-container">
+            <button class="choice-button slide-right" onclick="goToNextStage('fase1')">Inizia il viaggio</button>
+            <button class="choice-button slide-right" onclick="goToNextStage('fase2')">Prendi una pausa</button>
+        </div>
+    </div>
+</main>
 
 <script src="main.js"></script>
 
