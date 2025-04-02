@@ -1,0 +1,141 @@
+/* Modern.css - Stile migliorato e dinamico */
+
+:root {
+    /* Palette colori aggiornata */
+    --primary-background: #FAF3E1;
+    --secondary-background: #F5E7C6;
+    --accent-color: #FF6D1F;
+    --text-color: #222222;
+    --border-color: #d2d2d7;
+    --hover-color: #D85C19;
+    --input-background: #ffffff;
+    --input-border: #d2d2d7;
+    --error-color: #d93025;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+
+    /* Animazioni */
+    --transition-speed: 0.3s;
+    --transition-function: cubic-bezier(0.4, 0, 0.2, 1);
+    --animation-duration: 0.8s;
+}
+
+body {
+    font-family: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--primary-background);
+    color: var(--text-color);
+    line-height: 1.6;
+    transition: background-color var(--transition-speed) var(--transition-function);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    color: var(--text-color);
+    transition: color var(--transition-speed) var(--transition-function);
+}
+
+h2 {
+    color: var(--accent-color);
+}
+
+a {
+    color: var(--accent-color);
+    transition: color var(--transition-speed) var(--transition-function);
+}
+
+a:hover {
+    color: var(--hover-color);
+    text-decoration: underline;
+}
+
+button, .button {
+    background-color: var(--accent-color);
+    color: white;
+    border-radius: 8px;
+    transition: all var(--transition-speed) var(--transition-function), transform 0.2s;
+}
+
+button:hover, .button:hover {
+    background-color: var(--hover-color);
+    transform: scale(1.05);
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 2rem;
+    transition: transform 0.3s;
+}
+
+.card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+    transition: transform var(--transition-speed) var(--transition-function), box-shadow var(--transition-speed) var(--transition-function);
+}
+
+.card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    transition: border-color var(--transition-speed) var(--transition-function), box-shadow var(--transition-speed) var(--transition-function);
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 8px rgba(255, 109, 31, 0.3);
+}
+
+/* Animazioni */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.fade-in {
+    animation: fadeIn var(--animation-duration) var(--transition-function);
+}
+
+.bounce {
+    animation: bounce 1s infinite;
+}
+
+.pulse {
+    animation: pulse 1.5s infinite;
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+    .container {
+        padding: 1.5rem;
+    }
+}
+
+/* Dark mode */
+.dark-mode {
+    --primary-background: #1a1a1a;
+    --secondary-background: #2a2a2a;
+    --text-color: #f0f0f0;
+    --input-background: #333333;
+    --input-border: #444444;
+}

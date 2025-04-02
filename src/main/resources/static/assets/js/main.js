@@ -1,4 +1,52 @@
-// Utility functions
+// Animazioni al scroll
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: "0px"
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add("active");
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('.slide-up, .slide-down, .slide-left, .slide-right').forEach(el => {
+    observer.observe(el);
+});
+
+// Effetti interattivi
+document.addEventListener('DOMContentLoaded', () => {
+    // Effetto parallax
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        document.querySelector('header').style.transform = `translateY(${scrolled * 0.5}px)`;
+    });
+
+    // Effetto onda sul pulsante
+    const button = document.querySelector('.button');
+    button.addEventListener('mousemove', (e) => {
+        const rect = button.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        button.style.setProperty('--x', `${x}px`);
+        button.style.setProperty('--y', `${y}px`);
+    });
+
+    // Suono al click (opzionale)
+    const clickSound = new Audio('click.mp3');
+    document.querySelectorAll('.button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            clickSound.play();
+        });
+    });
+});
+
+// Controllo preferenze utente
+if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.body.classList.add('reduce-motion');
+}// Utility functions
 function getJSON(url, callback) {
     fetch(url)
         .then(response => {
