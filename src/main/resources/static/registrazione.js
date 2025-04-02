@@ -1,8 +1,10 @@
+// Funzione per validare l'email
 function validateEmail(email) {
     const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\\.,;:\s@\"]+\.)+[^<>()[\]\\.,;:\s@\"]{2,})$/i;
     return re.test(email);
 }
 
+// Funzione per verificare la forza della password
 function checkPasswordStrength(password) {
     const strengthBar = document.getElementById('strength-bar');
     let strength = 0;
@@ -14,12 +16,14 @@ function checkPasswordStrength(password) {
     strengthBar.value = strength;
 }
 
+// Funzione principale di registrazione
 function registrazione() {
     const nomeUtente = document.getElementById('nome-utente').value;
     const email = document.getElementById('email').value;
     const givenPassword = document.getElementById('password-registrazione').value;
     const confermaPassword = document.getElementById('conferma-password').value;
 
+    // Validazione email
     if (!validateEmail(email)) {
         alert("Email non valida!");
         document.getElementById('email').classList.add('error');
@@ -28,6 +32,7 @@ function registrazione() {
         document.getElementById('email').classList.remove('error');
     }
 
+    // Validazione password
     if (givenPassword !== confermaPassword) {
         alert("Le password non corrispondono!");
         document.getElementById('password-registrazione').classList.add('error');
@@ -38,6 +43,7 @@ function registrazione() {
         document.getElementById('conferma-password').classList.remove('error');
     }
 
+    // Gestione del form di registrazione
     document.getElementById('form-registrazione').addEventListener('submit', function(event) {
         event.preventDefault();
 
@@ -47,6 +53,7 @@ function registrazione() {
             password: givenPassword
         };
 
+        // Invio dati al server
         fetch('http://localhost:8080/api/users/register', {
             method: 'POST',
             headers: {
@@ -56,9 +63,10 @@ function registrazione() {
         })
         .then(response => response.json())
         .then(data => {
-            alert('Registration successful!');
+            alert('Registrazione completata con successo!');
             console.log(data);
             
+            // Login automatico dopo la registrazione
             UserManager.login(nomeUtente, givenPassword, (loginError, loginData) => {
                 if (loginError) {
                     alert("Registrazione completata, ma errore durante il login automatico. Prova ad accedere manualmente.");
@@ -69,13 +77,13 @@ function registrazione() {
             });
         })
         .catch(error => {
-            alert('Registration failed!');
+            alert('Registrazione fallita!');
             console.error('Error:', error);
         });
     });
 }
 
-// Inizializza il gestore utenti quando la pagina si carica
+// Inizializzazione quando la pagina si carica
 document.addEventListener('DOMContentLoaded', function() {
     UserManager.init();
 });
