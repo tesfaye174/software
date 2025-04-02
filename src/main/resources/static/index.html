@@ -3,263 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Storie Interattive</title>
-    <link rel="stylesheet" href="modern.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Colori principali armoniosi */
-        :root {
-            --sustainable-linen: #FAF3E1; /* Sustainable Linen */
-            --recycled-cotton: #F5E7C6; /* Recycled Cotton */
-            --electric-tangerine: #FF6D1F; /* Electric Tangerine */
-            --black-hole: #222222; /* Black Hole */
-            --border-color: #d2d2d7; /* Grigio bordo */
-            --button-hover-color: #FF6D1F; /* Electric Tangerine */
-            --input-background: #ffffff; /* Bianco */
-            --input-border: #d2d2d7; /* Grigio bordo */
-            --error-color: #d93025; /* Rosso errore */
-            --primary-color: #005f73; /* Blu petrolio */
-            --secondary-color: #94d2bd; /* Verde menta chiaro */
-            --background-color: #f5f5f5; /* Grigio molto chiaro */
-            --text-color: #333; /* Grigio antracite */
-            --link-color: #FF6D1F; /* Electric Tangerine */
-        }
-
-        /* Stili generali */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            font-size: 16px;
-            line-height: 1.5;
-            color: var(--text-color);
-            background-color: var(--sustainable-linen);
-            overflow-x: hidden;
-        }
-
-        /* Header */
-        header {
-            background-color: var(--primary-color);
-            color: #fff;
-            padding: 2rem 1rem;
-            text-align: center;
-            animation: slideFromTop 1s ease-out;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 2.5rem;
-            font-weight: bold;
-            animation: zoomIn 1.5s ease-in-out;
-        }
-
-        /* Main */
-        main {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: calc(100vh - 160px);
-            text-align: center;
-            padding: 1rem;
-            background: linear-gradient(135deg, rgba(245, 231, 217, 0.4), rgba(245, 245, 245, 0));
-            border-radius: 15px;
-            animation: fadeInScale 2s ease-out;
-        }
-
-        main h2 {
-            font-size: 7rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            animation: bounceText 2.5s infinite ease-in-out;
-        }
-
-        main h3 {
-            font-size: 2rem;
-            margin-bottom: 2rem;
-            color: var(--secondary-color);
-            font-style: italic;
-            animation: fadeInLeft 1.5s ease-in-out;
-        }
-
-        main p {
-            font-size: 1.2rem;
-            color: var(--text-color);
-            max-width: 700px;
-            margin: 0 auto 2.5rem;
-            animation: fadeInRight 1.5s ease-in-out;
-        }
-
-        main a {
-            display: inline-block;
-            padding: 1rem 2rem;
-            background-color: var(--electric-tangerine);
-            color: #fff;
-            text-decoration: none;
-            font-size: 1.2rem;
-            border-radius: 8px;
-            transition: transform 0.3s ease, background-color 0.3s ease;
-            animation: glow 1.5s ease-out infinite alternate;
-        }
-
-        main a:hover {
-            background-color: var(--button-hover-color);
-            transform: scale(1.1);
-        }
-
-        /* Footer */
-        footer {
-            background-color: var(--primary-color);
-            color: #fff;
-            text-align: center;
-            padding: 1.5rem 0;
-            font-size: 1rem;
-            animation: slideFromBottom 1.2s ease-out;
-        }
-
-        /* Animazioni */
-        @keyframes slideFromTop {
-            0% {
-                transform: translateY(-100%);
-            }
-            100% {
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideFromBottom {
-            0% {
-                transform: translateY(100%);
-            }
-            100% {
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes zoomIn {
-            0% {
-                transform: scale(0.5);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadeInScale {
-            0% {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        @keyframes bounceText {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        @keyframes fadeInLeft {
-            0% {
-                transform: translateX(-50%);
-                opacity: 0;
-            }
-            100% {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadeInRight {
-            0% {
-                transform: translateX(50%);
-                opacity: 0;
-            }
-            100% {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes glow {
-            0% {
-                box-shadow: 0 0 10px rgba(238, 155, 0, 0.5);
-            }
-            100% {
-                box-shadow: 0 0 20px rgba(238, 155, 0, 1);
-            }
-        }
-
-        /* Media query per dispositivi mobili */
-        @media (max-width: 768px) {
-            main h2 {
-                font-size: 4rem;
-            }
-            main h3 {
-                font-size: 1.5rem;
-            }
-        }
-
-        /* Media query per dispositivi tablet */
-        @media (max-width: 1024px) {
-            main h2 {
-                font-size: 5rem;
-            }
-        }
-    </style>
+    <meta name="description" content="Piattaforma di storie interattive dove ogni scelta modifica il percorso narrativo">
+    <meta name="keywords" content="storie, racconti interattivi, giochi di ruolo, narrativa">
+    <title>Storie Intrecciate | Narrativa Interattiva</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <header>
-    <h1>Storie Intrecciate</h1>
+    <nav class="nav-container">
+        <a href="index.html" class="logo">
+            <img src="assets/imag/Stoiesb.png" height="71" width="562"/></a>
+
+    </nav>
 </header>
 
 <main class="container">
-    <div class="card fade-in">
-        <h2 class="slide-up">Benvenuto!</h2>
-        <h3 class="slide-left">Pronto a vivere un'avventura unica?</h3>
-        <p class="slide-right">
-            Immergiti in un mondo di storie interattive dove ogni scelta che fai può cambiare tutto.
-            Sogna, esplora e condividi i tuoi percorsi con la nostra comunità.
-        </p>
-        <a href="registrazione.html" class="button pulse">Inizia ora</a>
-    </div>
+    <section class="hero-section">
+        <div class="card">
+            <h2>Benvenuto nell'Universo Narrativo</h2>
+            <h3>Crea il tuo Destino</h3>
+            <p>
+                Esplora mondi infiniti dove ogni decisione plasma la realtà.
+                Collabora con altri lettori o crea il tuo capolavoro letterario.
+            </p>
+            <div class="button-container">
+                <a href="registrazione.html" class="button button-primary">Inizia l'Avventura</a>
+            </div>
+        </div>
+    </section>
 </main>
-
-<footer>
-    &copy; 2025 Storie Interattive. Tutti i diritti riservati.
-</footer>
-
-<script src="main.js"></script>
-<script>
-    // Inizializza il gestore utenti quando la pagina si carica
-    document.addEventListener('DOMContentLoaded', function() {
-        UserManager.init();
-        
-        // Aggiorna l'interfaccia utente in base allo stato di autenticazione
-        if (UserManager.currentUser) {
-            // Se l'utente è già autenticato, modifica il link per iniziare
-            const startLink = document.querySelector('main a');
-            if (startLink) {
-                startLink.href = "story.html?id=1";
-                startLink.textContent = "Inizia la tua avventura";
-            }
-        }
-    });
-</script>
+<div class="theme-switcher" onclick="toggleTheme()">🌓</div>
+<script src="script.js"></script>
 </body>
 </html>
+

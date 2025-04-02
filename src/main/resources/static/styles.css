@@ -1,60 +1,294 @@
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            color: #333;
-            background-color: #f0f8ff;
-        }
+:root {
+    --background-color: #f0f8ff;
+    --text-color: #333;
+    --header-bg: #5A20CB;
+    --header-text: white;
+    --accent-color: #5A20CB;
+    --accent-hover: #713FC2;
+    --card-bg: white;
+    --card-shadow: rgba(0, 0, 0, 0.1);
+    --transition-speed: 0.3s;
+}
+
+.dark-theme {
+    --background-color: #222;
+    --text-color: #f0f0f0;
+    --header-bg: #3a1080;
+    --header-text: #f0f0f0;
+    --accent-color: #8A50FB;
+    --accent-hover: #9D6FFF;
+    --card-bg: #333;
+    --card-shadow: rgba(0, 0, 0, 0.3);
+}
+
+body {
+    font-family: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+}
         header {
-            background-color: #5A20CB;
-            color: white;
+            background-color: var(--header-bg);
+            color: var(--header-text);
             padding: 2rem 1rem;
             text-align: center;
+            transition: background-color var(--transition-speed);
         }
         header h1 {
             margin: 0;
             font-size: 2.5rem;
             font-weight: bold;
+            color: var(--header-text);
         }
         main {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: calc(100vh - 160px);
+            min-height: calc(100vh - 160px);
             text-align: center;
             padding: 1rem;
         }
         main h2 {
             font-size: 4rem;
-            color: #5A20CB;
+            color: var(--accent-color);
             margin-bottom: 1.5rem;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            transition: color var(--transition-speed);
         }
         main p {
             font-size: 1.2rem;
-            color: #555;
+            color: var(--text-color);
             max-width: 600px;
             margin: 0 auto 2.5rem;
+            transition: color var(--transition-speed);
         }
-        main a {
+        main a, .button {
             display: inline-block;
             padding: 1rem 2rem;
-            background-color: #5A20CB;
+            background-color: var(--accent-color);
             color: white;
             text-decoration: none;
             font-size: 1.2rem;
             border-radius: 8px;
-            transition: background-color 0.3s, transform 0.3s;
+            transition: background-color var(--transition-speed), transform var(--transition-speed);
+            cursor: pointer;
+            border: none;
         }
-        main a:hover {
-            background-color: #713FC2;
+        main a:hover, .button:hover {
+            background-color: var(--accent-hover);
             transform: scale(1.05);
         }
         footer {
-            background-color: #333;
-            color: white;
+            background-color: var(--header-bg);
+            color: var(--header-text);
             text-align: center;
             padding: 1.5rem 0;
             font-size: 1rem;
+            transition: background-color var(--transition-speed);
         }
+
+/* Componenti aggiuntivi */
+.card {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 6px 12px var(--card-shadow);
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed), background-color var(--transition-speed);
+    margin-bottom: 2rem;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px var(--card-shadow);
+}
+
+.hero-section {
+    width: 100%;
+    max-width: 800px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.button-primary {
+    background-color: var(--accent-color);
+}
+
+.button-secondary {
+    background-color: transparent;
+    border: 2px solid var(--accent-color);
+    color: var(--accent-color);
+}
+
+.button-secondary:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+/* Navigazione */
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+}
+
+.logo img {
+    max-height: 71px;
+    width: auto;
+}
+
+/* Tema switcher */
+.theme-switcher {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background-color: var(--accent-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s, background-color var(--transition-speed);
+    z-index: 1000;
+}
+
+.theme-switcher:hover {
+    transform: scale(1.1);
+    background-color: var(--accent-hover);
+}
+
+/* Animazioni */
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+}
+
+.slide-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideUp 0.8s forwards;
+}
+
+.slide-down {
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: slideDown 0.8s forwards;
+}
+
+.slide-left {
+    opacity: 0;
+    transform: translateX(20px);
+    animation: slideLeft 0.8s forwards;
+}
+
+.slide-right {
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: slideRight 0.8s forwards;
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideLeft {
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideRight {
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Stili per la pagina di gioco */
+.user-info {
+    position: fixed;
+    top: 10px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    z-index: 100;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.auth-buttons a, .auth-buttons button {
+    padding: 5px 10px;
+    background-color: var(--accent-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+}
+
+.auth-buttons a:hover, .auth-buttons button:hover {
+    background-color: var(--accent-hover);
+}
+
+.choices {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.choice-button {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color var(--transition-speed), transform 0.2s;
+}
+
+.choice-button:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+}
+
+.story-text {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}

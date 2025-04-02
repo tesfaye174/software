@@ -3,167 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrazione</title>
-    <link rel="stylesheet" href="modern.css">
+    <title>Registrazione Intertwined Stories Logo</title>
+    <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Colori e stili principali */
-        :root {
-            --sustainable-linen: #FAF3E1; /* Sustainable Linen */
-            --recycled-cotton: #F5E7C6; /* Recycled Cotton */
-            --electric-tangerine: #FF6D1F; /* Electric Tangerine */
-            --black-hole: #222222; /* Black Hole */
-            --border-color: #d2d2d7; /* Grigio bordo */
-            --button-hover-color: #D85C19; /* Versione scura di Electric Tangerine */
-            --input-background: #ffffff; /* Bianco */
-            --input-border: #d2d2d7; /* Grigio bordo */
-            --error-color: #d93025; /* Rosso errore */
-            --success-color: #28a745; /* Verde successo */
-            --warning-color: #ffc107; /* Giallo avviso */
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: var(--sustainable-linen);
-            color: var(--black-hole);
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-        }
-        
-        header {
-            background-color: var(--electric-tangerine);
-            color: white;
-            padding: 1rem;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        nav {
-            display: flex;
-            justify-content: center;
-            background-color: var(--recycled-cotton);
-            padding: 0.5rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-        
-        nav a {
-            color: var(--black-hole);
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            margin: 0 0.5rem;
-            border-radius: 4px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        
-        nav a:hover {
-            background-color: var(--electric-tangerine);
-            color: white;
-        }
-        
-        .user-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 1rem;
-        }
-
-        section {
-            max-width: 400px;
-            margin: 50px auto;
-            padding: 2rem;
-            background-color: var(--recycled-cotton);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        label {
-            font-size: 0.9rem;
-            color: var(--black-hole);
-        }
-
-        input {
-            width: 100%;
-            padding: 0.8rem;
-            font-size: 1rem;
-            color: var(--black-hole);
-            background-color: var(--input-background);
-            border: 1px solid var(--input-border);
-            border-radius: 8px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        input:focus {
-            border-color: var(--electric-tangerine);
-        }
-
-        input.error {
-            border-color: var(--error-color);
-        }
-
-        button {
-            width: 100%;
-            padding: 1rem;
-            font-size: 1rem;
-            font-weight: 600;
-            color: #fff;
-            background-color: var(--electric-tangerine);
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        button:hover {
-            background-color: var(--button-hover-color);
-            transform: translateY(-1px);
-        }
-
-        button:active {
-            transform: translateY(1px);
-        }
-
-        p {
-            font-size: 0.9rem;
-            text-align: center;
-            margin-top: 1rem;
-        }
-
-        p a {
-            color: var(--electric-tangerine);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        p a:hover {
-            color: var(--button-hover-color);
-        }
-    </style>
+    <link href="styles.css">
 </head>
 <body>
+<header>
+    <nav class="nav-container">
+        <a href="index.html" class="logo">
+            <img src="static/imag/Stoiesb.png" height="71" width="562"/>
+        </a>
+    </nav>
+</header>
 <!-- Sezione Registrazione -->
 <div class="container">
     <section id="registrazione" class="card slide-up">
@@ -188,92 +42,6 @@
     </section>
 </div>
 
-<script src="main.js"></script>
-<script>
-    // Funzione di registrazione
-    function validateEmail(email) {
-        const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\\.,;:\s@\"]+\.)+[^<>()[\]\\.,;:\s@\"]{2,})$/i;
-        return re.test(email);
-    }
-
-    function checkPasswordStrength(password) {
-        const strengthBar = document.getElementById('strength-bar');
-        let strength = 0;
-        if (password.length >= 8) strength += 1;
-        if (password.match(/[a-z]+/)) strength += 1;
-        if (password.match(/[A-Z]+/)) strength += 1;
-        if (password.match(/[0-9]+/)) strength += 1;
-        if (password.match(/[$@#&!]+/)) strength += 1;
-        strengthBar.value = strength;
-    }
-
-    function registrazione() {
-        const nomeUtente = document.getElementById('nome-utente').value;
-        const email = document.getElementById('email').value;
-        const givenPassword = document.getElementById('password-registrazione').value;
-        const confermaPassword = document.getElementById('conferma-password').value;
-
-        if (!validateEmail(email)) {
-            alert("Email non valida!");
-            document.getElementById('email').classList.add('error');
-            return;
-        } else {
-            document.getElementById('email').classList.remove('error');
-        }
-
-        if (password !== confermaPassword) {
-            alert("Le password non corrispondono!");
-            document.getElementById('password-registrazione').classList.add('error');
-            document.getElementById('conferma-password').classList.add('error');
-            return;
-        } else {
-            document.getElementById('password-registrazione').classList.remove('error');
-            document.getElementById('conferma-password').classList.remove('error');
-        }
-
-        //
-
-        document.getElementById('form-registrazione').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const formData = {
-                username: nomeUtente,
-                email: email,
-                password: givenPassword
-            };
-
-            fetch('http://localhost:8080/api/users/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert('Registration successful!');
-                console.log(data);
-            })
-            .catch(error => {
-                alert('Registration failed!');
-                console.error('Error:', error);
-            });
-        });
-            UserManager.login(nomeUtente, password, (loginError, loginData) => {
-                if (loginError) {
-                    alert("Registrazione completata, ma errore durante il login automatico. Prova ad accedere manualmente.");
-                    window.location.href = "login.html";
-                    return;
-                }
-                window.location.href = "home.html";
-            });
-        });
-    }
-
-    // Inizializza il gestore utenti quando la pagina si carica
-    document.addEventListener('DOMContentLoaded', function() {
-        UserManager.init();
-    });
-</script>
+<script src="registrazione.js"></script>
 </body>
 </html>
