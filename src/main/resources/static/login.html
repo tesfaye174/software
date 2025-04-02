@@ -148,31 +148,5 @@
 </div>
 
 <script src="login.js"></script>
-<script>
-    // Funzione di login
-    function login() {
-        const email = document.getElementById('email-login').value;
-        const password = document.getElementById('password-login').value;
-        
-        // Usa UserManager per effettuare il login
-        UserManager.login(email, password, (error, data) => {
-            if (error) {
-                alert("Errore di login: " + (error.message || "Credenziali non valide"));
-                document.getElementById('email-login').classList.add('error');
-                document.getElementById('password-login').classList.add('error');
-                return;
-            }
-            
-            alert("Login effettuato con successo!");
-            // Reindirizza l'utente alla home.html
-            window.location.href = "home.html";
-        });
-    }
-    
-    // Inizializza il gestore utenti quando la pagina si carica
-    document.addEventListener('DOMContentLoaded', function() {
-        UserManager.init();
-    });
-</script>
 </body>
 </html>
