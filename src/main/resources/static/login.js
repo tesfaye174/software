@@ -41,7 +41,7 @@ async function login() {
             // Salva il token di autenticazione
             localStorage.setItem('authToken', data.token);
             // Reindirizza alla dashboard o homepage
-            window.location.href = 'index.html';
+            window.location.href = 'login.html';
         } else {
             mostraErrore(data.message || 'Errore durante il login');
         }
